@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 enum PieceType {
   wPawn(0),
   wKnight(1),
@@ -51,7 +49,6 @@ Map<PieceType, String> asciiPieces = {
   PieceType.wBishop: "B",
   PieceType.wKnight: "N",
   PieceType.wPawn: "P",
-
   PieceType.bKing: "k",
   PieceType.bQueen: "q",
   PieceType.bRook: "r",
@@ -67,7 +64,6 @@ Map<PieceType, String> unicodePieces = {
   PieceType.bRook: "♖",
   PieceType.bQueen: "♕",
   PieceType.bKing: "♔",
-
   PieceType.wPawn: "♟︎",
   PieceType.wKnight: "♞",
   PieceType.wBishop: "♝",

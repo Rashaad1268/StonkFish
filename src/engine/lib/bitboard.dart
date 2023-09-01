@@ -1,6 +1,5 @@
 import "dart:io" show stdout;
 
-import "package:engine/constants.dart" show Side;
 
 class BitBoard {
   final int value;
@@ -42,6 +41,7 @@ class BitBoard {
     if (shift > 0) return BitBoard(value >>> shift);
     return this;
   }
+
   BitBoard operator >>(int shift) => shr(shift);
 
   /// Bitwise left shift
@@ -50,6 +50,7 @@ class BitBoard {
     if (shift > 0) return BitBoard(value << shift);
     return this;
   }
+
   BitBoard operator <<(int shift) => shl(shift);
 
   BitBoard xor(BitBoard other) => BitBoard(value ^ other.value);

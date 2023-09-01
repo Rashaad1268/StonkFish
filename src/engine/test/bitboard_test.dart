@@ -9,9 +9,8 @@ int actualGetBit(int value, int square) {
 }
 
 void main() {
-
   test('Test BitBoard.getBit()', () {
-  var bitBoard = BitBoard(0);
+    var bitBoard = BitBoard(0);
     expect(bitBoard.getBit(Squares.a1),
         equals(actualGetBit(bitBoard.value, Squares.a1)));
     expect(bitBoard.getBit(Squares.b1),

@@ -1,8 +1,19 @@
+import 'package:engine/bitboard.dart';
+
+export 'enums.dart';
 // ignore_for_file: constant_identifier_names
 
-enum Color { white, black }
+const kFileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const kRankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-class Squares {
+const kInitialBoardFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+
+/// Initial position in the Extended Position Description format.
+const kInitialEPD = '$kInitialBoardFEN w KQkq -';
+
+enum Side { white, black }
+
+abstract class Squares {
   static const a8 = 0;
   static const b8 = 1;
   static const c8 = 2;
@@ -69,17 +80,16 @@ class Squares {
   static const h1 = 63;
 }
 
-
 // Trust me, these values are not random
 
 // Represents a board with all bits set to 1 except the bits in the A file
-const NOT_A_FILE = 0xFEFEFEFEFEFEFEFE;
+const NOT_A_FILE = BitBoard(0xFEFEFEFEFEFEFEFE);
 
 // A board with all bits set to 1 except the bits in the A file and the B file
-const NOT_AB_FILE = 0xFCFCFCFCFCFCFCFC;
+const NOT_AB_FILE = BitBoard(0xFCFCFCFCFCFCFCFC);
 
 // Board with all bits set to 1 except the bits in the H file
-const NOT_H_FILE = 0x7F7F7F7F7F7F7F7F;
+const NOT_H_FILE = BitBoard(0x7F7F7F7F7F7F7F7F);
 
 // A board with all bits set to 1 except the bits in the H file and the G file
-const NOT_HG_FILE = 0x3F3F3F3F3F3F3F3F;
+const NOT_HG_FILE = BitBoard(0x3F3F3F3F3F3F3F3F);

@@ -5,5 +5,5 @@ import 'package:engine/constants.dart';
 void main(List<String> arguments) {
   var board = Board.startingPosition;
 
-  board.printBoard(fillEmptySquares: false);
+  board.printBoard(useUnicodeCharacters: false);
 }

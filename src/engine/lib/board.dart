@@ -89,4 +89,8 @@ class Board {
     stdout.write('   ------------------');
     stdout.write('\n     a b c d e f g h\n');
   }
+
+  void makeMove() {
+    throw UnimplementedError("Implement this bruh");
+  }
 }

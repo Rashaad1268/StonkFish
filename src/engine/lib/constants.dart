@@ -6,12 +6,17 @@ export 'enums.dart';
 const kFileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const kRankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-const kInitialBoardFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+const kStartingPosFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
 
 /// Initial position in the Extended Position Description format.
-const kInitialEPD = '$kInitialBoardFEN w KQkq -';
+const kInitialEPD = '$kStartingPosFEN w KQkq -';
 
-enum Side { white, black }
+enum Side {
+  white,
+  black;
+
+  Side opposite() => this == white ? black : white;
+}
 
 abstract class Squares {
   static const a8 = 0;

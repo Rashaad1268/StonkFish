@@ -1,9 +1,11 @@
 import "dart:io" show stdout;
 
+import "package:engine/enums.dart";
 
 class BitBoard {
   final int value;
-  const BitBoard(this.value);
+  final PieceType? pieceType;
+  const BitBoard(this.value, {this.pieceType});
 
   static const full = BitBoard(0xffffffffffffffff);
   static const lightSquares = BitBoard(0x55AA55AA55AA55AA);

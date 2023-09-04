@@ -3,23 +3,27 @@ import 'dart:io' show stdout;
 
 import 'package:engine/bitboard.dart';
 import 'package:engine/constants.dart';
+import 'package:engine/utils.dart';
 
 class Board {
+  Side turn;
+
   late final HashMap<PieceType, BitBoard> pieceBitBoards;
 
   Board(
-      {whiteKing,
-      whiteQueens,
-      whiteRooks,
-      whiteBishops,
-      whiteKnights,
-      whitePawns,
-      blackKing,
-      blackQueens,
-      blackRooks,
-      blackBishops,
-      blackKnights,
-      blackPawns}) {
+      {this.turn = Side.white,
+      required whiteKing,
+      required whiteQueens,
+      required whiteRooks,
+      required whiteBishops,
+      required whiteKnights,
+      required whitePawns,
+      required blackKing,
+      required blackQueens,
+      required blackRooks,
+      required blackBishops,
+      required blackKnights,
+      required blackPawns}) {
     pieceBitBoards = HashMap();
     pieceBitBoards[PieceType.wKing] = whiteKing;
     pieceBitBoards[PieceType.wQueen] = whiteQueens;
@@ -37,42 +41,36 @@ class Board {
   }
 
   static final startingPosition = Board(
-      whiteKing: BitBoard(1152921504606846976),
-      whiteQueens: BitBoard(576460752303423488),
-      whiteRooks: BitBoard(-9151314442816847872),
-      whiteBishops: BitBoard(2594073385365405696),
-      whiteKnights: BitBoard(4755801206503243776),
-      whitePawns: BitBoard(71776119061217280),
-      blackKing: BitBoard(16),
-      blackQueens: BitBoard(8),
-      blackRooks: BitBoard(129),
-      blackBishops: BitBoard(36),
-      blackKnights: BitBoard(66),
-      blackPawns: BitBoard(65280));
+      whiteKing: BitBoard(1152921504606846976, pieceType: PieceType.wKing),
+      whiteQueens: BitBoard(576460752303423488, pieceType: PieceType.wQueen),
+      whiteRooks: BitBoard(-9151314442816847872, pieceType: PieceType.wRook),
+      whiteBishops: BitBoard(2594073385365405696, pieceType: PieceType.wBishop),
+      whiteKnights: BitBoard(4755801206503243776, pieceType: PieceType.wKnight),
+      whitePawns: BitBoard(71776119061217280, pieceType: PieceType.wPawn),
+      blackKing: BitBoard(16, pieceType: PieceType.bKing),
+      blackQueens: BitBoard(8, pieceType: PieceType.bQueen),
+      blackRooks: BitBoard(129, pieceType: PieceType.bRook),
+      blackBishops: BitBoard(36, pieceType: PieceType.bBishop),
+      blackKnights: BitBoard(66, pieceType: PieceType.bKnight),
+      blackPawns: BitBoard(65280, pieceType: PieceType.bPawn));
 
   void printBoard(
-      {Side side = Side.white,
+      {Side? side,
       bool useUnicodeCharacters = true,
       bool fillEmptySquares = false}) {
+    final isWhite = (side == Side.white) || turn == Side.white;
+
     print('');
 
     for (var rank = 0; rank < 8; rank++) {
       for (var file = 0; file < 8; file++) {
-        final square = rank * 8 + file;
+        final square = isWhite ? rank * 8 + file : 63 - (rank * 8 + file);
 
         if (file == 0) {
-          stdout.write("${8 - rank}  | ");
+          stdout.write("${isWhite ? 8 - rank : rank + 1}  | ");
         }
 
-        PieceType? piece;
-
-        for (final pieceType in PieceType.values) {
-          var bitBoard = pieceBitBoards[pieceType];
-
-          if (bitBoard!.getBit(square) == 1) {
-            piece = pieceType;
-          }
-        }
+        PieceType? piece = getPieceInSquare(square);
 
         if (piece != null) {
           stdout.write(
@@ -80,17 +78,85 @@ class Board {
         } else {
           stdout.write(useUnicodeCharacters && fillEmptySquares ? '◻ ' : '  ');
         }
-
-        // stdout.write('${getBit(square)} ');
       }
       stdout.write('\n');
     }
 
     stdout.write('   ------------------');
-    stdout.write('\n     a b c d e f g h\n');
+    stdout.write(
+        isWhite ? '\n     a b c d e f g h\n' : '\n     h g f e d c b a\n');
   }
 
-  void makeMove() {
-    throw UnimplementedError("Implement this bruh");
+  PieceType? getPieceInSquare(int square) {
+    /* Returns the piece occupying the given square
+      if the square is empty returns null */
+    for (final entry in pieceBitBoards.entries) {
+      final pieceType = entry.key;
+      final bitboard = entry.value;
+
+      if (bitboard.getBit(square) == 1) {
+        return pieceType;
+      }
+    }
+    return null;
+  }
+
+  void makeMove(String move) {
+    final from = squareFromAlgebraic(move.substring(0, 2));
+    final to = squareFromAlgebraic(move.substring(2, 4));
+
+    if (from == null || to == null) {
+      throw ArgumentError('Invalid move supplied');
+    }
+
+    final pieceBeingMoved = getPieceInSquare(from);
+
+    if (pieceBeingMoved == null) {
+      throw ArgumentError('Invalid move supplied');
+    }
+
+    // pieceBeingMoved.idx is the id assigned to the piece, 0-5 is white pieces and 6-11 are black pieces
+    if (turn != pieceBeingMoved.color) {
+      throw ArgumentError("You can't move the pieces of the other side");
+    } else if (turn == Side.black && pieceBeingMoved.idx < 6) {
+      throw ArgumentError("You can't move the pieces of the other side");
+    }
+
+    var bitBoard = pieceBitBoards[pieceBeingMoved]!;
+    bitBoard = bitBoard.popBit(from);
+    bitBoard = bitBoard.setBit(to);
+    pieceBitBoards[pieceBeingMoved] = bitBoard;
+
+    turn = turn.opposite();
+  }
+
+  String toFen() {
+    /* Converts the current position into FEN */
+
+    var fen = '';
+    var count = 0;
+
+    for (var rank = 0; rank < 8; rank++) {
+      for (var file = 0; file < 8; file++) {
+        final square = rank * 8 + file;
+
+        final piece = getPieceInSquare(square);
+
+        if (piece == null) {
+          count++;
+          continue;
+        } else {
+          fen += "${count > 0 ? count : ''}${asciiPieces[piece]!}";
+          count = 0;
+        }
+      }
+
+      if (rank < 7) {
+        fen += "${count > 0 ? count : ''}/";
+        count = 0;
+      }
+    }
+
+    return fen;
   }
 }

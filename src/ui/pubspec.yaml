@@ -31,10 +31,17 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Add the StonkFish engine itself as a dependency
+  engine:
+    path: ../engine
+
+  chessground: ^1.3.1
+  fast_immutable_collections: ^9.1.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
 
 dev_dependencies:
   flutter_test:

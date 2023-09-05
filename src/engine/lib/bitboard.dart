@@ -82,6 +82,11 @@ class BitBoard {
   @override
   int get hashCode => value.hashCode;
 
+  @override
+  String toString() {
+    return "BitBoard($value)";
+  }
+
   printBoard({bool showBoardValue = false}) {
     print('');
 

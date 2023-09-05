@@ -1,10 +1,8 @@
 import 'dart:math';
 import 'package:test/test.dart';
+import 'package:engine/engine.dart';
 
-import 'package:engine/bitboard.dart';
-import 'package:engine/constants.dart';
-
-int actualGetBit(int value, int square) {
+int properGetBit(int value, int square) {
   return (value >> square) & 1;
 }
 
@@ -12,11 +10,11 @@ void main() {
   test('Test BitBoard.getBit()', () {
     var bitBoard = BitBoard(0);
     expect(bitBoard.getBit(Squares.a1),
-        equals(actualGetBit(bitBoard.value, Squares.a1)));
+        equals(properGetBit(bitBoard.value, Squares.a1)));
     expect(bitBoard.getBit(Squares.b1),
-        equals(actualGetBit(bitBoard.value, Squares.b1)));
+        equals(properGetBit(bitBoard.value, Squares.b1)));
     expect(bitBoard.getBit(Squares.c1),
-        equals(actualGetBit(bitBoard.value, Squares.c1)));
+        equals(properGetBit(bitBoard.value, Squares.c1)));
   });
 
   test('Test BitBoard.setBit() and BitBoard.popBit()', () {
@@ -40,7 +38,7 @@ void main() {
     // Read the values of each bit and see if the value is correct
     for (var index = 0; index < randomSquareValues.length; index++) {
       final expectedValue = randomSquareValues[index];
-      final actualValue = actualGetBit(bitBoard.value, index);
+      final actualValue = properGetBit(bitBoard.value, index);
 
       expect(actualValue, equals(expectedValue));
     }

@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
-import 'package:engine/utils.dart';
-import 'package:engine/constants.dart';
+import 'package:engine/engine.dart';
 
 void main() {
   test('Test getSquareRank()', () {

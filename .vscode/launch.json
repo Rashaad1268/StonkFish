@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "discord_bot",
+            "cwd": "src/discord_bot",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "engine",
+            "cwd": "src/engine",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/engine.dart"
+        },
+        {
+            "name": "ui",
+            "cwd": "src/ui",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "ui (profile mode)",
+            "cwd": "src/ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "ui (release mode)",
+            "cwd": "src/ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

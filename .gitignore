@@ -1,2 +1,4 @@
 test.py
 .DS_STORE
+
+*.env

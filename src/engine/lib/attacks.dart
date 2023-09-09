@@ -7,13 +7,9 @@ import 'package:engine/utils.dart';
 final HashMap<Side, List<BitBoard>> pawnAttacks =
     HashMap.from({Side.white: <BitBoard>[], Side.black: <BitBoard>[]});
 
-final List<BitBoard> kingAttacks = [];
-
+List<BitBoard> kingAttacks = [];
 List<BitBoard> knightAttacks = [];
 List<BitBoard> bishopMasks = [];
-List<BitBoard> rookMasks = [];
-List<BitBoard> bishopAttacks = [];
-List<BitBoard> rookAttacks = [];
 
 BitBoard maskPawnAttacks(int square, {required Side side}) {
   final bitboard = BitBoard(0).setBit(square);
@@ -61,6 +57,125 @@ BitBoard maskKingAttacks(int square) {
   if (((bitboard << 7) & NOT_H_FILE).value > 0) attacks |= (bitboard << 7);
   if (((bitboard << 1) & NOT_A_FILE).value > 0) attacks |= (bitboard << 1);
 
+  return attacks;
+}
+
+BitBoard maskBishopAttacks(int square) {
+  var attacks = BitBoard(0);
+
+  var tr = (square / 8).floor();
+  var tf = square % 8;
+
+  // mask relevant bishop occupancy bits
+  // TODO: Maybe combine all of these loops into a single loop? (skill issue)
+  for (var r = tr + 1, f = tf + 1; r <= 6 && f <= 6; r++, f++) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+  }
+
+  for (var r = tr - 1, f = tf + 1; r >= 1 && f <= 6; r--, f++) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+  }
+
+  for (var r = tr + 1, f = tf - 1; r <= 6 && f >= 1; r++, f--) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+  }
+
+  for (var r = tr - 1, f = tf - 1; r >= 1 && f >= 1; r--, f--) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+  }
+
+  // return attack map
+  return attacks;
+}
+
+BitBoard maskRookAttacks(int square) {
+  // result attacks bitboard
+  var attacks = BitBoard(0);
+
+  // init target rank & files
+  var tr = (square / 8).floor();
+  var tf = square % 8;
+
+  // Mask relevant bishop occupancy bits
+  // TODO: Maybe combine all of these loops into a single loop? (skill issue)
+  for (var r = tr + 1; r <= 6; r++) {
+    attacks |= BitBoard(1 << (r * 8 + tf));
+  }
+  for (var r = tr - 1; r >= 1; r--) {
+    attacks |= BitBoard(1 << (r * 8 + tf));
+  }
+  for (var f = tf + 1; f <= 6; f++) {
+    attacks |= BitBoard(1 << (tr * 8 + f));
+  }
+  for (var f = tf - 1; f >= 1; f--) {
+    attacks |= BitBoard(1 << (tr * 8 + f));
+  }
+
+  return attacks;
+}
+
+BitBoard genBishopAttacksOnTheFly(int square, int blockers) {
+  // result attacks bitboard
+  var attacks = BitBoard(0);
+
+  // init target rank & files
+  var tr = (square / 8).floor();
+  var tf = square % 8;
+
+  // generate bishop atacks
+  for (var r = tr + 1, f = tf + 1; r <= 7 && f <= 7; r++, f++) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+    if (((1 << (r * 8 + f)) & blockers) > 0) break;
+  }
+
+  for (var r = tr - 1, f = tf + 1; r >= 0 && f <= 7; r--, f++) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+    if (((1 << (r * 8 + f)) & blockers) > 0) break;
+  }
+
+  for (var r = tr + 1, f = tf - 1; r <= 7 && f >= 0; r++, f--) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+    if (((1 << (r * 8 + f)) & blockers) > 0) break;
+  }
+
+  for (var r = tr - 1, f = tf - 1; r >= 0 && f >= 0; r--, f--) {
+    attacks |= BitBoard(1 << (r * 8 + f));
+    if (((1 << (r * 8 + f)) & blockers) > 0) break;
+  }
+
+  // return attack map
+  return attacks;
+}
+
+BitBoard genRookAttacksOnTheFly(int square, int blockers) {
+  var attacks = BitBoard(0);
+
+  // init target rank & files
+  var tr = (square / 8).floor();
+  var tf = square % 8;
+
+  // generate rook attacks
+  for (var r = tr + 1; r <= 7; r++) {
+    attacks |= BitBoard(1 << (r * 8 + tf));
+    if (((1 << (r * 8 + tf)) & blockers) > 0) break;
+  }
+
+  for (var r = tr - 1; r >= 0; r--) {
+    attacks |= BitBoard(1 << (r * 8 + tf));
+    if (((1 << (r * 8 + tf)) & blockers) > 0) break;
+  }
+
+  for (var f = tf + 1; f <= 7; f++) {
+    attacks |= BitBoard(1 << (tr * 8 + f));
+    if (((1 << (tr * 8 + f)) & blockers) > 0) break;
+  }
+
+  for (var f = tf - 1; f >= 0; f--) {
+    attacks |= BitBoard(1 << (tr * 8 + f));
+    if (((1 << (tr * 8 + f)) & blockers) > 0) break;
+  }
+
+  // return attack map
   return attacks;
 }
 

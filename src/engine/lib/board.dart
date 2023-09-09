@@ -54,38 +54,68 @@ class Board {
       blackKnights: BitBoard(66, pieceType: PieceType.bKnight),
       blackPawns: BitBoard(65280, pieceType: PieceType.bPawn));
 
-  void printBoard(
+  BitBoard get whitePieces =>
+      pieceBitBoards[PieceType.wKing]! |
+      pieceBitBoards[PieceType.wQueen]! |
+      pieceBitBoards[PieceType.wRook]! |
+      pieceBitBoards[PieceType.wBishop]! |
+      pieceBitBoards[PieceType.wKnight]! |
+      pieceBitBoards[PieceType.wPawn]!;
+
+  BitBoard get blackPieces =>
+      pieceBitBoards[PieceType.bKing]! |
+      pieceBitBoards[PieceType.bQueen]! |
+      pieceBitBoards[PieceType.bRook]! |
+      pieceBitBoards[PieceType.bBishop]! |
+      pieceBitBoards[PieceType.bKnight]! |
+      pieceBitBoards[PieceType.bPawn]!;
+
+  String formatBoard(
       {Side? side,
       bool useUnicodeCharacters = true,
       bool fillEmptySquares = false}) {
     final isWhite = (side == Side.white) || turn == Side.white;
 
-    print('');
+    var buffer = "\n";
+
+    if (!useUnicodeCharacters) {
+      buffer += "      Turn: ${turn == Side.white ? 'white' : 'black'}\n";
+    }
 
     for (var rank = 0; rank < 8; rank++) {
       for (var file = 0; file < 8; file++) {
         final square = isWhite ? rank * 8 + file : 63 - (rank * 8 + file);
 
         if (file == 0) {
-          stdout.write("${isWhite ? 8 - rank : rank + 1}  | ");
+          buffer += "${isWhite ? 8 - rank : rank + 1}  | ";
         }
 
         PieceType? piece = getPieceInSquare(square);
 
         if (piece != null) {
-          stdout.write(
-              '${useUnicodeCharacters ? unicodePieces[piece] : asciiPieces[piece]} ');
+          buffer +=
+              '${useUnicodeCharacters ? unicodePieces[piece] : asciiPieces[piece]} ';
         } else {
-          stdout.write(useUnicodeCharacters && fillEmptySquares ? '◻ ' : '  ');
+          buffer += fillEmptySquares ? '◻ ' : '  ';
         }
       }
-      stdout.write('\n');
+      buffer += '\n';
     }
 
-    stdout.write('   ------------------');
-    stdout.write(
-        isWhite ? '\n     a b c d e f g h\n' : '\n     h g f e d c b a\n');
+    buffer += '   ------------------';
+    buffer += isWhite ? '\n     a b c d e f g h\n' : '\n     h g f e d c b a\n';
+
+    return buffer;
   }
+
+  void printBoard(
+          {Side? side,
+          bool useUnicodeCharacters = true,
+          bool fillEmptySquares = false}) =>
+      formatBoard(
+          side: side,
+          useUnicodeCharacters: useUnicodeCharacters,
+          fillEmptySquares: fillEmptySquares);
 
   PieceType? getPieceInSquare(int square) {
     /* Returns the piece occupying the given square

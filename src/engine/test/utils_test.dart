@@ -49,4 +49,31 @@ void main() {
     expect(squareFromAlgebraic('g7'), equals(Squares.g7));
     expect(squareFromAlgebraic('h8'), equals(Squares.h8));
   });
+
+  test('Test squareToAlgebraic()', () {
+    expect(squareToAlgebraic(Squares.a1), equals('a1'));
+    expect(squareToAlgebraic(Squares.b2), equals('b2'));
+    expect(squareToAlgebraic(Squares.c3), equals('c3'));
+    expect(squareToAlgebraic(Squares.d4), equals('d4'));
+    expect(squareToAlgebraic(Squares.e5), equals('e5'));
+    expect(squareToAlgebraic(Squares.f6), equals('f6'));
+    expect(squareToAlgebraic(Squares.g7), equals('g7'));
+    expect(squareToAlgebraic(Squares.h8), equals('h8'));
+  });
+
+  test('Test countBits()', () {
+    final board = Board.startingPosition;
+
+    expect(countBits(board.whitePieces), equals(16));
+    expect(countBits(board.blackPieces), equals(16));
+    expect(countBits(board.whitePieces | board.blackPieces), equals(32));
+  });
+
+  test('Test getLs1bIndex()', () {
+    final board = Board.startingPosition;
+
+    expect(getLs1bIndex(BitBoard(0)), null);
+    expect(getLs1bIndex(board.whitePieces), equals(Squares.a2));
+    expect(getLs1bIndex(board.blackPieces), equals(Squares.a8));
+  });
 }

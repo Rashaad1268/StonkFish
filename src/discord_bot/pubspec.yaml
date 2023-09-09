@@ -8,6 +8,11 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  # Add the StonkFish engine itself as a dependency
+  engine:
+    path: ../engine
+
+  nyxx: ^5.1.1
   # path: ^1.8.0
 
 dev_dependencies:

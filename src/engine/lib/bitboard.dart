@@ -53,6 +53,8 @@ class BitBoard {
     return this;
   }
 
+  BitBoard operator -() => BitBoard(-value);
+
   BitBoard operator <<(int shift) => shl(shift);
 
   BitBoard xor(BitBoard other) => BitBoard(value ^ other.value);

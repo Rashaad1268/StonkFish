@@ -1,8 +1,6 @@
-import 'package:engine/bitboard.dart';
-import 'package:engine/board.dart';
-import 'package:engine/constants.dart';
+import 'dart:io';
+
 import 'package:engine/engine.dart';
-import 'package:engine/utils.dart';
 
 // void main(List<String> arguments) {
 // init();
@@ -33,5 +31,24 @@ import 'package:engine/utils.dart';
 // }
 
 void main(List<String> arguments) {
-  maskKingAttacks(Squares.d4).printBoard();
+  final board = Board.startingPosition;
+  board.pieceBitBoards[PieceType.wPawn]!.printBoard();
+  // genRookAttacksOnTheFly(Squares.d4, 0).printBoard();
+  // genRookAttacksOnTheFly(
+  //         Squares.h1, (board.whitePieces | board.blackPieces).value)
+  //     .printBoard();
+
+  // (board.whitePieces | board.blackPieces).printBoard();
+  // setOccupancy(4095, countBits(maskRookAttacks(Squares.a1)),
+  //         maskRookAttacks(Squares.a1))
+  //     .printBoard();
+  // assert(setOccupancy(
+  //     0, countBits(maskRookAttacks(Squares.a1)), maskRookAttacks(Squares.a1)).value == 0);
+
+  print(getRandomNumber());
+  print(getRandomNumber());
+  print(getRandomNumber());
+  print(getRandomNumber());
+  print(getRandomNumber());
+  print(getRandomNumber());
 }

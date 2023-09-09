@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:engine/constants.dart';
 
 enum PieceType {
@@ -29,22 +31,22 @@ enum PieceType {
 }
 
 class MoveFlags {
-    static const int quiet = 0;
-    static const int doublePush = 1;
-    static const int kingSideCastle = 2;
-    static const int queenSideCastle = 3;
-    static const int capture = 8;
-    static const int captures = 15;
-    static const int enPassant = 10;
-    static const int promotions = 7;
-    static const int promotionCaptures = 12;
+  static const int quiet = 0;
+  static const int doublePush = 1;
+  static const int kingSideCastle = 2;
+  static const int queenSideCastle = 3;
+  static const int capture = 8;
+  static const int captures = 15;
+  static const int enPassant = 10;
+  static const int promotions = 7;
+  static const int promotionCaptures = 12;
 
-    static const int prKnight = 4;
-    static const int prBishop = 5;
-    static const int prRook = 6;
-    static const int pcBishop = 13;
-    static const int pcRook = 14;
-    }
+  static const int prKnight = 4;
+  static const int prBishop = 5;
+  static const int prRook = 6;
+  static const int pcBishop = 13;
+  static const int pcRook = 14;
+}
 
 enum CastlingRights {
   wKingSide(1),
@@ -70,7 +72,7 @@ enum CastlingRights {
   int complement() => ~value;
 }
 
-Map<PieceType, String> asciiPieces = {
+HashMap<PieceType, String> asciiPieces = HashMap.from({
   PieceType.wKing: "K",
   PieceType.wQueen: "Q",
   PieceType.wRook: "R",
@@ -83,9 +85,9 @@ Map<PieceType, String> asciiPieces = {
   PieceType.bBishop: "b",
   PieceType.bKnight: "n",
   PieceType.bPawn: "p",
-};
+});
 
-Map<PieceType, String> unicodePieces = {
+HashMap<PieceType, String> unicodePieces = HashMap.from({
   PieceType.bPawn: "♙",
   PieceType.bKnight: "♘",
   PieceType.bBishop: "♗",
@@ -98,7 +100,8 @@ Map<PieceType, String> unicodePieces = {
   PieceType.wRook: "♜",
   PieceType.wQueen: "♛",
   PieceType.wKing: "♚"
-};
+});
+
 
 class Move {
   final String from;

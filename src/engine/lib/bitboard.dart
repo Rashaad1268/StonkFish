@@ -71,6 +71,8 @@ class BitBoard {
 
   BitBoard complement() => BitBoard(~value);
 
+  BitBoard operator *(int other) => BitBoard(value * other);
+
   BitBoard diff(BitBoard other) => BitBoard(value & ~other.value);
 
   @override

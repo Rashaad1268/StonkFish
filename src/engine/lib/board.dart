@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io' show stdout;
 
 import 'package:engine/bitboard.dart';
 import 'package:engine/constants.dart';

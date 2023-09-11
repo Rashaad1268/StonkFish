@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import './env.dart';
 import 'package:engine/engine.dart';
 import 'package:nyxx/nyxx.dart';

@@ -33,7 +33,7 @@ class _ChessBoardState extends State<ChessBoard> {
                   board.turn == engine.Side.white ? Side.white : Side.black,
               onMove: (move, {isDrop, isPremove}) {},
               validMoves: IMap.fromEntries({
-                'd2': ISet(['d4'])
+                'd2': ISet(const ['d4'])
               }.entries)),
         ),
         Padding(

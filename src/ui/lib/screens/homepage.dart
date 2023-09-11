@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui/widgets/chessBoard.dart';
+import 'package:ui/widgets/chess_board.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

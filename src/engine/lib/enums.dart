@@ -102,6 +102,10 @@ HashMap<PieceType, String> unicodePieces = HashMap.from({
   PieceType.wKing: "♚"
 });
 
+HashMap<String, PieceType> stringTopiece = HashMap.fromIterable(
+    asciiPieces.entries,
+    key: (e) => e.value,
+    value: (e) => e.key);
 
 class Move {
   final String from;

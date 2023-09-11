@@ -27,31 +27,32 @@ int? squareFromAlgebraic(String str) {
   return square;
 }
 
-int countBits(BitBoard bitboard) {
+int countBits(int bitboard) {
   var count = 0;
-  var val = bitboard.value;
 
-  while (val != 0) {
-    val &= val - 1;
+  while (bitboard != 0) {
+    bitboard &= bitboard - 1;
     count++;
   }
   return count;
 }
 
-int? getLs1bIndex(BitBoard bitboard) {
-  assert(bitboard.value != 0);
-  return countBits((bitboard & -bitboard) - BitBoard(1));
+int getLs1bIndex(int bitboard) {
+  assert(bitboard != 0);
+  return countBits((bitboard & -bitboard) - 1);
 }
 
 BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
+  // occupancy map
   var occupancy = BitBoard(0);
 
   // loop over the range of bits within attack mask
   for (int count = 0; count < bitsInMask; count++) {
     // get LS1B index of attacks mask
-    int square = getLs1bIndex(attackMask)!;
+    int square = getLs1bIndex(attackMask.value);
 
     // pop LS1B in attack map
+    // print("pop bit of square $square");
     attackMask = attackMask.popBit(square);
 
     // make sure occupancy is on board
@@ -65,45 +66,43 @@ BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
   return occupancy;
 }
 
-var randomState = 1804289383;
+int randomState = 1804289383;
 
 // generate 32-bit pseudo legal numbers
-int getRandomNumber()
-{
-    // get current state
-    var number = randomState;
-    
-    // XOR shift algorithm
-    number ^= number << 13;
-    number ^= number >> 17;
-    number ^= number << 5;
-    
-    // update random number state
-    randomState = number;
-    
-    // return random number
-    return number;
+int getRandomNum() {
+  // get current state
+  int number = randomState;
+
+  // XOR shift algorithm
+  number ^= number << 13;
+  number ^= number >> 17;
+  number ^= number << 5;
+
+  // update random number state
+  randomState = number;
+
+  // return random number
+  return number;
 }
 
-int get64BitRandomNum()
-{
-    // define 4 random numbers
-    int n1, n2, n3, n4;
-    
-    // init random numbers slicing 16 bits from MS1B side
-    n1 = getRandomNumber() & 0xFFFF;
-    n2 = getRandomNumber() & 0xFFFF;
-    n3 = getRandomNumber() & 0xFFFF;
-    n4 = getRandomNumber() & 0xFFFF;
-    
-    // return random number
-    return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
+// generate 64-bit pseudo legal numbers
+int getRandom64BitNumber() {
+  // define 4 random numbers
+  int n1, n2, n3, n4;
+
+  // init random numbers slicing 16 bits from MS1B side
+  n1 = (getRandomNum()) & 0xFFFF;
+  n2 = (getRandomNum()) & 0xFFFF;
+  n3 = (getRandomNum()) & 0xFFFF;
+  n4 = (getRandomNum()) & 0xFFFF;
+
+  // return random number
+  return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
 }
 
 // generate magic number candidate
-int generateMagicNumber()
-{
-    return get64BitRandomNum() & get64BitRandomNum() & get64BitRandomNum();
+int generateMagicNumber() {
+  return getRandom64BitNumber() &
+      getRandom64BitNumber() &
+      getRandom64BitNumber();
 }
-
-

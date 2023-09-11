@@ -64,16 +64,17 @@ void main() {
   test('Test countBits()', () {
     final board = Board.startingPosition;
 
-    expect(countBits(board.whitePieces), equals(16));
-    expect(countBits(board.blackPieces), equals(16));
-    expect(countBits(board.whitePieces | board.blackPieces), equals(32));
+    expect(countBits(board.whitePieces.value), equals(16));
+    expect(countBits(board.blackPieces.value), equals(16));
+    expect(
+        countBits((board.whitePieces | board.blackPieces).value), equals(32));
   });
 
   test('Test getLs1bIndex()', () {
     final board = Board.startingPosition;
 
-    expect(getLs1bIndex(BitBoard(0)), null);
-    expect(getLs1bIndex(board.whitePieces), equals(Squares.a2));
-    expect(getLs1bIndex(board.blackPieces), equals(Squares.a8));
+    expect(() => getLs1bIndex(0), throwsA(isA<AssertionError>()));
+    expect(getLs1bIndex(board.whitePieces.value), equals(Squares.a2));
+    expect(getLs1bIndex(board.blackPieces.value), equals(Squares.a8));
   });
 }

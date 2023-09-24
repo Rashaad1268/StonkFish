@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:engine/constants.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 enum PieceType {
   wPawn(0),
@@ -16,6 +17,9 @@ enum PieceType {
   bRook(9),
   bQueen(10),
   bKing(11);
+
+  static const whitePieces = [wPawn, wKnight, wBishop, wRook, wQueen, wKing];
+  static const blackPieces = [bPawn, bKnight, bBishop, bRook, bQueen, bKing];
 
   final int idx;
 
@@ -48,31 +52,14 @@ class MoveFlags {
   static const int pcRook = 14;
 }
 
-enum CastlingRights {
-  wKingSide(1),
-  wQueenSide(2),
-  bKingSide(4),
-  bQueenSide(8);
-
-  final int value;
-  const CastlingRights(this.value);
-
-  int xor(CastlingRights other) => value ^ other.value;
-  int operator ^(CastlingRights other) => value ^ other.value;
-
-  int union(CastlingRights other) => value | other.value;
-  int operator |(CastlingRights other) => value | other.value;
-
-  int intersect(CastlingRights other) => value & other.value;
-  int operator &(CastlingRights other) => value & other.value;
-
-  int minus(CastlingRights other) => value - other.value;
-  int operator -(CastlingRights other) => value - other.value;
-
-  int operator ~() => ~value;
+abstract class CastlingRights {
+  static const wKingSide = 1;
+  static const wQueenSide = 2;
+  static const bKingSide = 4;
+  static const bQueenSide = 8;
 }
 
-HashMap<PieceType, String> asciiPieces = HashMap.from({
+const IMapConst<PieceType, String> asciiPieces = IMapConst({
   PieceType.wKing: "K",
   PieceType.wQueen: "Q",
   PieceType.wRook: "R",
@@ -87,7 +74,22 @@ HashMap<PieceType, String> asciiPieces = HashMap.from({
   PieceType.bPawn: "p",
 });
 
-HashMap<PieceType, String> unicodePieces = HashMap.from({
+const IMapConst<PieceType, String> pieceToAscii = IMapConst({
+  PieceType.wKing: "K",
+  PieceType.wQueen: "Q",
+  PieceType.wRook: "R",
+  PieceType.wBishop: "B",
+  PieceType.wKnight: "N",
+  PieceType.wPawn: "P",
+  PieceType.bKing: "k",
+  PieceType.bQueen: "q",
+  PieceType.bRook: "r",
+  PieceType.bBishop: "b",
+  PieceType.bKnight: "n",
+  PieceType.bPawn: "p",
+});
+
+const IMapConst<PieceType, String> unicodePieces = IMapConst({
   PieceType.bPawn: "♙",
   PieceType.bKnight: "♘",
   PieceType.bBishop: "♗",
@@ -102,7 +104,7 @@ HashMap<PieceType, String> unicodePieces = HashMap.from({
   PieceType.wKing: "♚"
 });
 
-HashMap<String, PieceType> stringTopiece = HashMap.fromIterable(
+HashMap<String, PieceType> pieceFromString = HashMap.fromIterable(
     asciiPieces.entries,
     key: (e) => e.value,
     value: (e) => e.key);

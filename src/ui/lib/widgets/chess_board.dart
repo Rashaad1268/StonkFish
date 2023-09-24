@@ -11,7 +11,8 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
-  final board = engine.Board.startingPosition;
+  final board = engine.Board.fromFen(
+      'r2q1rk1/ppp2ppp/2n1bn2/2b1p3/3pP3/3P1NPP/PPP1NPB1/R1BQ1RK1 b - - 0 9');
   var errorMessage = '';
 
   @override
@@ -25,16 +26,16 @@ class _ChessBoardState extends State<ChessBoard> {
           size: boardSize,
           settings: const BoardSettings(enablePremoves: false),
           data: BoardData(
-              fen: board.toFen(),
-              interactableSide: InteractableSide.both,
-              orientation:
-                  board.turn == engine.Side.white ? Side.white : Side.black,
-              sideToMove:
-                  board.turn == engine.Side.white ? Side.white : Side.black,
-              onMove: (move, {isDrop, isPremove}) {},
-              validMoves: IMap.fromEntries({
-                'd2': ISet(const ['d4'])
-              }.entries)),
+            fen: board.toFen(),
+            interactableSide: InteractableSide.both,
+            orientation: Side.white,
+            sideToMove:
+                board.turn == engine.Side.white ? Side.white : Side.black,
+            onMove: (move, {isDrop, isPremove}) {},
+            validMoves: IMap.fromEntries({
+              'd2': ISet(const ['d4'])
+            }.entries),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(20),

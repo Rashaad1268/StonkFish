@@ -155,17 +155,20 @@ int findMagicNumber(int square, int relevantBits, bool isBishop) {
     bool fail = false;
     int magicNumber = generateMagicNumber();
 
-    if (countBits((mask.value * magicNumber) & 0xFF00000000000000) < 6)
+    if (countBits((mask.value * magicNumber) & 0xFF00000000000000) < 6) {
       continue;
+    }
 
-    for (i = 0; i < 4096; i++) usedAttacks[i] = 0;
+    for (i = 0; i < 4096; i++) {
+      usedAttacks[i] = 0;
+    }
 
     print(!fail && i < (1 << n));
     for (var i = 0, fail = false; !fail && i < (1 << n); i++) {
       j = (occupancies[i]! * magicNumber) >> (64 - relevantBits);
-      if (usedAttacks[j] == 0)
+      if (usedAttacks[j] == 0) {
         usedAttacks[j] = attacks[i]!;
-      else if (usedAttacks[j] != attacks[i]) fail = true;
+      } else if (usedAttacks[j] != attacks[i]) fail = true;
     }
 
     if (!fail) return magicNumber;

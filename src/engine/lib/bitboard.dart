@@ -3,6 +3,10 @@ import "dart:io" show stdout;
 import "package:engine/enums.dart";
 
 class BitBoard {
+  /*
+  BitBoard | BitBoard is union, combines all of the bits
+  BitBoard & BitBoard is interection, if both bits are 1 the result is 1 else 0
+  */
   final int value;
   final PieceType? pieceType;
   const BitBoard(this.value, {this.pieceType});
@@ -91,7 +95,9 @@ class BitBoard {
     return "BitBoard($value)";
   }
 
-  printBoard({bool showBoardValue = false}) {
+  bool notEmpty() => value != 0;
+
+  printBoard({bool showBoardValue = true}) {
     print('');
 
     for (var rank = 0; rank < 8; rank++) {

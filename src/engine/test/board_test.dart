@@ -5,7 +5,7 @@ void main() {
   test('Test Board.toFen()', () {
     final board = Board.startingPosition;
 
-    expect(board.toFen(), equals(kStartingPosFEN));
+    expect(board.toFen(), equals(initialPosEPD));
   });
 
   test('Test Bord.makeMove()', () {

@@ -43,7 +43,6 @@ int getLs1bIndex(int bitboard) {
 }
 
 BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
-  // occupancy map
   var occupancy = BitBoard(0);
 
   // loop over the range of bits within attack mask
@@ -52,7 +51,6 @@ BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
     int square = getLs1bIndex(attackMask.value);
 
     // pop LS1B in attack map
-    // print("pop bit of square $square");
     attackMask = attackMask.popBit(square);
 
     // make sure occupancy is on board
@@ -62,7 +60,6 @@ BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
     }
   }
 
-  // return occupancy map
   return occupancy;
 }
 
@@ -70,7 +67,6 @@ int randomState = 1804289383;
 
 // generate 32-bit pseudo legal numbers
 int getRandomNum() {
-  // get current state
   int number = randomState;
 
   // XOR shift algorithm
@@ -81,13 +77,11 @@ int getRandomNum() {
   // update random number state
   randomState = number;
 
-  // return random number
   return number;
 }
 
 // generate 64-bit pseudo legal numbers
 int getRandom64BitNumber() {
-  // define 4 random numbers
   int n1, n2, n3, n4;
 
   // init random numbers slicing 16 bits from MS1B side
@@ -96,7 +90,6 @@ int getRandom64BitNumber() {
   n3 = (getRandomNum()) & 0xFFFF;
   n4 = (getRandomNum()) & 0xFFFF;
 
-  // return random number
   return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
 }
 
@@ -105,4 +98,46 @@ int generateMagicNumber() {
   return getRandom64BitNumber() &
       getRandom64BitNumber() &
       getRandom64BitNumber();
+}
+
+String castlingRightsToStr(int rights) {
+  var buffer = "";
+  if ((rights & CastlingRights.wKingSide) > 0) {
+    buffer += "K";
+  }
+  if ((rights & CastlingRights.wQueenSide) > 0) {
+    buffer += "Q";
+  }
+  if ((rights & CastlingRights.bKingSide) > 0) {
+    buffer += "k";
+  }
+  if ((rights & CastlingRights.bQueenSide) > 0) {
+    buffer += "q";
+  }
+  if (rights == 0) {
+    buffer += "-";
+  }
+
+  return buffer;
+}
+
+int castlingRightsFromStr(String rightsStr) {
+  int rights = 0;
+
+  if (rightsStr == "-") return 0;
+
+  if (rightsStr.contains("K")) {
+    rights |= CastlingRights.wKingSide;
+  }
+  if (rightsStr.contains("Q")) {
+    rights |= CastlingRights.wQueenSide;
+  }
+  if (rightsStr.contains("k")) {
+    rights |= CastlingRights.bKingSide;
+  }
+  if (rightsStr.contains("q")) {
+    rights |= CastlingRights.bQueenSide;
+  }
+
+  return rights;
 }

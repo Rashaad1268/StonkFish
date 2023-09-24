@@ -77,4 +77,20 @@ void main() {
     expect(getLs1bIndex(board.whitePieces.value), equals(Squares.a2));
     expect(getLs1bIndex(board.blackPieces.value), equals(Squares.a8));
   });
+
+  test('Test castlingRightsToStr', () {
+    expect(castlingRightsToStr(0), equals("-"));
+    expect(castlingRightsToStr(5), equals("Kk"));
+    expect(castlingRightsToStr(7), equals("KQk"));
+    expect(castlingRightsToStr(13), equals("Kkq"));
+    expect(castlingRightsToStr(15), equals("KQkq"));
+  });
+
+  test('Test castlingRightsFromStr', () {
+    expect(castlingRightsFromStr("-"), equals(0));
+    expect(castlingRightsFromStr("Kk"), equals(5));
+    expect(castlingRightsFromStr("KQk"), equals(7));
+    expect(castlingRightsFromStr("Kkq"), equals(13));
+    expect(castlingRightsFromStr("KQkq"), equals(15));
+  });
 }

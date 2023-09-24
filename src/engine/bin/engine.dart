@@ -3,19 +3,31 @@ import 'dart:io';
 import 'package:engine/engine.dart';
 
 void main(List<String> arguments) {
-  init();
+  initAttacks();
 
-  var occ = BitBoard(0);
+  var board = Board.startingPosition;
+// board.pieceBitBoards[PieceType.wPawn]!.printBoard();
 
-  occ = occ.setBit(Squares.c5);
-  occ = occ.setBit(Squares.f2);
-  occ = occ.setBit(Squares.g7);
-  occ = occ.setBit(Squares.b2);
-  occ = occ.setBit(Squares.g5);
-  occ = occ.setBit(Squares.e2);
-  occ = occ.setBit(Squares.e7);
+  board.printBoard();
+  print('\nEnter Move >>>');
 
-  occ.printBoard(showBoardValue: true);
-  getBishopAttacks(Squares.d4, occ).printBoard();
-  getRookAttacks(Squares.g2, occ).printBoard();
+  while (true) {
+    final move = stdin.readLineSync();
+
+    if (move == null || move.length != 4) {
+      print("Invalid move bruh");
+      continue;
+    }
+
+    try {
+      board.makeMove(move);
+    } catch (error) {
+      if (error is ArgumentError) {
+        print(error.message);
+      }
+    }
+
+    board.printBoard();
+    print("IS check: ${board.isCheck}");
+  }
 }

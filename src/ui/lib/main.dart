@@ -1,3 +1,4 @@
+import 'package:engine/engine.dart';
 import 'package:flutter/material.dart';
 import 'screens/homepage.dart';
 
@@ -10,8 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initAttacks();
+
     return MaterialApp(
-      title: 'The UI for the StonkFish chess engine',
+      title: 'StonkFish chess engine',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,

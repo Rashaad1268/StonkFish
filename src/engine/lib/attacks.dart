@@ -1,21 +1,27 @@
 import 'dart:collection';
 
 import 'package:engine/bitboard.dart';
+import 'package:engine/board.dart';
 import 'package:engine/constants.dart';
 import 'package:engine/magic_numbers.dart';
 import 'package:engine/utils.dart';
 
-final HashMap<Side, List<BitBoard>> pawnAttacks = HashMap.from({
-  Side.white: List.generate(64, (_) => BitBoard(0)),
-  Side.black: List.generate(64, (_) => BitBoard(0))
-});
-
+final List<List<BitBoard>> pawnAttacks = [
+  List.generate(64, (_) => BitBoard(0)), // White pawns
+  List.generate(64, (_) => BitBoard(0)) // Black pawns
+];
+/* Only use List.filled with mutable objects,
+   BitBoard is not mutable but we don't use List.filled to hopefully avoid any bugs in the future
+*/
 List<BitBoard> kingAttacks = List.generate(64, (_) => BitBoard(0));
 List<BitBoard> knightAttacks = List.generate(64, (_) => BitBoard(0));
 List<BitBoard> bishopMasks = List.generate(64, (_) => BitBoard(0));
 List<BitBoard> rookMasks = List.generate(64, (_) => BitBoard(0));
 
-List<HashMap<int, BitBoard>> bishopAttacks = List.generate(64, (_) => HashMap());
+/* Use List.generate especially for mutable objects such as Maps
+   because the same instance is shared by every element of the list */
+List<HashMap<int, BitBoard>> bishopAttacks =
+    List.generate(64, (_) => HashMap());
 List<HashMap<int, BitBoard>> rookAttacks = List.generate(64, (_) => HashMap());
 
 BitBoard maskPawnAttacks(int square, {required Side side}) {
@@ -186,49 +192,44 @@ BitBoard genRookAttacksOnTheFly(int square, int blockers) {
   return attacks;
 }
 
-void initSlidersAttacks(bool isBishop) {
+void initSliderAttacks(bool isBishop) {
   // loop over 64 board squares
   for (int square = 0; square < 64; square++) {
-    // init bishop & rook masks
-    // bishopMasks[square] = maskBishopAttacks(square);
-    // rookMasks[square] = maskRookAttacks(square);
+    bishopMasks[square] = maskBishopAttacks(square);
+    rookMasks[square] = maskRookAttacks(square);
 
-    // init current mask
-    final attack_mask = isBishop ? bishopMasks[square] : rookMasks[square];
+    // Get current attack mask
+    final attackMask = isBishop ? bishopMasks[square] : rookMasks[square];
 
-    // init relevant occupancy bit count
-    int relevant_bits_count = countBits(attack_mask.value);
+    int relevantBitsCount = countBits(attackMask.value);
+    int occupancyIndicies = (1 << relevantBitsCount);
 
-    // init occupancy indicies
-    int occupancy_indicies = (1 << relevant_bits_count);
-
-    // loop over occupancy indicies
-    for (int index = 0; index < occupancy_indicies; index++) {
-      // bishop
+    for (int index = 0; index < occupancyIndicies; index++) {
       if (isBishop) {
-        // init current occupancy variation
+        // Bishop
+        // Get the current occupancy variation
         final occupancy =
-            setOccupancy(index, relevant_bits_count, attack_mask).value;
+            setOccupancy(index, relevantBitsCount, attackMask).value;
 
-        // init magic index
-        int magic_index = (occupancy * bishopMagicNumbers[square]) >>
+        // Initialize magic index
+        int magicIndex = (occupancy * bishopMagicNumbers[square]) >>
             (64 - bishopRelevantBits[square]);
 
-        // init bishop attacks
-        bishopAttacks[square][magic_index] =
+        // Set the bishop attacks
+        bishopAttacks[square][magicIndex] =
             genBishopAttacksOnTheFly(square, occupancy);
       } else {
-        // rook
-        // init current occupancy variation
+        // Rook
+        // Get the current occupancy variation
         final occupancy =
-            setOccupancy(index, relevant_bits_count, attack_mask).value;
+            setOccupancy(index, relevantBitsCount, attackMask).value;
 
-        // init magic index
-        int magic_index = (occupancy * rookMagicNumbers[square]) >>
+        // Initialize magic index
+        int magicIndex = (occupancy * rookMagicNumbers[square]) >>
             (64 - rookRelevantBits[square]);
 
-        // init rook attacks
-        rookAttacks[square][magic_index] =
+        // Set the rook attacks
+        rookAttacks[square][magicIndex] =
             genRookAttacksOnTheFly(square, occupancy);
       }
     }
@@ -255,26 +256,27 @@ BitBoard getRookAttacks(int square, BitBoard occupancy) {
   return rookAttacks[square][occ]!;
 }
 
-void init() {
+BitBoard getQueenAttacks(int square, BitBoard occupancy) {
+  return getBishopAttacks(square, occupancy) |
+      getRookAttacks(square, occupancy);
+}
+
+
+void initAttacks() {
   for (var square = 0; square < 64; square++) {
     final rank = getSquareRank(square);
 
     // No need to mask attacks for the 1st and 8th ranks
     if (rank != 0 && rank != 7) {
-      pawnAttacks[Side.white]![square] =
-          maskPawnAttacks(square, side: Side.white);
-      pawnAttacks[Side.black]![square] =
-          maskPawnAttacks(square, side: Side.black);
+      pawnAttacks[0][square] = maskPawnAttacks(square, side: Side.white);
+      pawnAttacks[1][square] = maskPawnAttacks(square, side: Side.black);
     }
 
     knightAttacks[square] = maskKnightAttacks(square);
 
     kingAttacks[square] = maskKingAttacks(square);
-
-    bishopMasks[square] = maskBishopAttacks(square);
-    rookMasks[square] = maskRookAttacks(square);
   }
 
-  initSlidersAttacks(true);
-  initSlidersAttacks(false);
+  initSliderAttacks(true);
+  initSliderAttacks(false);
 }

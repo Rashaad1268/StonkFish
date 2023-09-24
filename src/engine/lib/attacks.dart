@@ -6,17 +6,17 @@ import 'package:engine/magic_numbers.dart';
 import 'package:engine/utils.dart';
 
 final HashMap<Side, List<BitBoard>> pawnAttacks = HashMap.from({
-  Side.white: List.filled(64, BitBoard(0)),
-  Side.black: List.filled(64, BitBoard(0))
+  Side.white: List.generate(64, (_) => BitBoard(0)),
+  Side.black: List.generate(64, (_) => BitBoard(0))
 });
 
-List<BitBoard> kingAttacks = List.filled(64, BitBoard(0));
-List<BitBoard> knightAttacks = List.filled(64, BitBoard(0));
-List<BitBoard> bishopMasks = List.filled(64, BitBoard(0));
-List<BitBoard> rookMasks = List.filled(64, BitBoard(0));
+List<BitBoard> kingAttacks = List.generate(64, (_) => BitBoard(0));
+List<BitBoard> knightAttacks = List.generate(64, (_) => BitBoard(0));
+List<BitBoard> bishopMasks = List.generate(64, (_) => BitBoard(0));
+List<BitBoard> rookMasks = List.generate(64, (_) => BitBoard(0));
 
-List<Map<int, BitBoard>> bishopAttacks = List.filled(64, {});
-List<Map<int, BitBoard>> rookAttacks = List.filled(64, {});
+List<HashMap<int, BitBoard>> bishopAttacks = List.generate(64, (_) => HashMap());
+List<HashMap<int, BitBoard>> rookAttacks = List.generate(64, (_) => HashMap());
 
 BitBoard maskPawnAttacks(int square, {required Side side}) {
   final bitboard = BitBoard(0).setBit(square);
@@ -190,15 +190,14 @@ void initSlidersAttacks(bool isBishop) {
   // loop over 64 board squares
   for (int square = 0; square < 64; square++) {
     // init bishop & rook masks
-    bishopMasks[square] = maskBishopAttacks(square);
-    rookMasks[square] = maskRookAttacks(square);
+    // bishopMasks[square] = maskBishopAttacks(square);
+    // rookMasks[square] = maskRookAttacks(square);
 
     // init current mask
-    int attack_mask =
-        (isBishop ? bishopMasks[square] : rookMasks[square]).value;
+    final attack_mask = isBishop ? bishopMasks[square] : rookMasks[square];
 
     // init relevant occupancy bit count
-    int relevant_bits_count = countBits(attack_mask);
+    int relevant_bits_count = countBits(attack_mask.value);
 
     // init occupancy indicies
     int occupancy_indicies = (1 << relevant_bits_count);
@@ -208,28 +207,21 @@ void initSlidersAttacks(bool isBishop) {
       // bishop
       if (isBishop) {
         // init current occupancy variation
-        int occupancy =
-            setOccupancy(index, relevant_bits_count, BitBoard(attack_mask))
-                .value;
+        final occupancy =
+            setOccupancy(index, relevant_bits_count, attack_mask).value;
 
         // init magic index
         int magic_index = (occupancy * bishopMagicNumbers[square]) >>
             (64 - bishopRelevantBits[square]);
 
         // init bishop attacks
-        if (bishopAttacks[square][magic_index]?.value !=
-            genBishopAttacksOnTheFly(square, occupancy).value) {
-          bishopAttacks[square][magic_index] =
-              genBishopAttacksOnTheFly(square, occupancy);
-        }
-      }
-
-      // rook
-      else {
+        bishopAttacks[square][magic_index] =
+            genBishopAttacksOnTheFly(square, occupancy);
+      } else {
+        // rook
         // init current occupancy variation
-        int occupancy =
-            setOccupancy(index, relevant_bits_count, BitBoard(attack_mask))
-                .value;
+        final occupancy =
+            setOccupancy(index, relevant_bits_count, attack_mask).value;
 
         // init magic index
         int magic_index = (occupancy * rookMagicNumbers[square]) >>
@@ -245,10 +237,22 @@ void initSlidersAttacks(bool isBishop) {
 
 BitBoard getBishopAttacks(int square, BitBoard occupancy) {
   // get bishop attacks assuming current board occupancy
-  var value = occupancy.value & bishopMasks[square].value;
+  var occ = occupancy.value;
+  occ &= bishopMasks[square].value;
+  occ *= bishopMagicNumbers[square];
+  occ >>= 64 - bishopRelevantBits[square];
 
-  return bishopAttacks[square][(value * bishopMagicNumbers[square]) >>
-      (64 - bishopRelevantBits[square])]!;
+  return bishopAttacks[square][occ]!;
+}
+
+BitBoard getRookAttacks(int square, BitBoard occupancy) {
+  // get rook attacks assuming current board occupancy
+  var occ = occupancy.value;
+  occ &= rookMasks[square].value;
+  occ *= rookMagicNumbers[square];
+  occ >>= 64 - rookRelevantBits[square];
+
+  return rookAttacks[square][occ]!;
 }
 
 void init() {
@@ -266,6 +270,9 @@ void init() {
     knightAttacks[square] = maskKnightAttacks(square);
 
     kingAttacks[square] = maskKingAttacks(square);
+
+    bishopMasks[square] = maskBishopAttacks(square);
+    rookMasks[square] = maskRookAttacks(square);
   }
 
   initSlidersAttacks(true);

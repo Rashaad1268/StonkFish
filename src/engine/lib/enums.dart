@@ -69,7 +69,7 @@ enum CastlingRights {
   int minus(CastlingRights other) => value - other.value;
   int operator -(CastlingRights other) => value - other.value;
 
-  int complement() => ~value;
+  int operator ~() => ~value;
 }
 
 HashMap<PieceType, String> asciiPieces = HashMap.from({

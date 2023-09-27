@@ -8,14 +8,14 @@ import 'package:engine/attacks.dart';
 class Board {
   Side? turn;
   int? castlingRights;
-  int? enPassantSquare;
-  final moves = <Move>[];
+  int? enPassant;
+  final movesPlayed = <Move>[];
 
   late final HashMap<PieceType, BitBoard> pieceBitBoards;
 
   Board(
       {required this.turn,
-      required this.enPassantSquare,
+      required this.enPassant,
       required this.castlingRights,
       required whiteKing,
       required whiteQueens,
@@ -51,7 +51,7 @@ class Board {
           CastlingRights.bKingSide |
           CastlingRights.bQueenSide,
       turn: Side.white,
-      enPassantSquare: null,
+      enPassant: null,
       whiteKing: BitBoard(1152921504606846976, pieceType: PieceType.wKing),
       whiteQueens: BitBoard(576460752303423488, pieceType: PieceType.wQueen),
       whiteRooks: BitBoard(-9151314442816847872, pieceType: PieceType.wRook),
@@ -68,7 +68,7 @@ class Board {
   static final empty = Board(
       castlingRights: null,
       turn: null,
-      enPassantSquare: null,
+      enPassant: null,
       whiteKing: BitBoard(0, pieceType: PieceType.wKing),
       whiteQueens: BitBoard(0, pieceType: PieceType.wQueen),
       whiteRooks: BitBoard(0, pieceType: PieceType.wRook),
@@ -105,6 +105,10 @@ class Board {
             .notEmpty() ||
         (pieceBitBoards[PieceType.bKing]! & getAttackedSquares(Side.white))
             .notEmpty();
+  }
+
+  BitBoard piecesOf(Side side) {
+    return side == Side.white ? whitePieces : blackPieces;
   }
 
   String formatBoard(
@@ -183,7 +187,7 @@ class Board {
     }
 
     // pieceBeingMoved.idx is the id assigned to the piece, 0-5 is white pieces and 6-11 are black pieces
-    if (turn != pieceBeingMoved.color) {
+    if (turn != pieceBeingMoved.side) {
       throw ArgumentError("You can't move the pieces of the other side");
     } else if (turn == Side.black && pieceBeingMoved.idx < 6) {
       throw ArgumentError("You can't move the pieces of the other side");
@@ -228,8 +232,8 @@ class Board {
 
     fen += " ${castlingRightsToStr(castlingRights!)} ";
 
-    if (enPassantSquare != null) {
-      fen += squareToAlgebraic(enPassantSquare!);
+    if (enPassant != null) {
+      fen += squareToAlgebraic(enPassant!);
     } else {
       fen += "- ";
     }
@@ -274,77 +278,9 @@ class Board {
     board.castlingRights = castlingRightsFromStr(castlingRights);
 
     if (enPassent != "-") {
-      board.enPassantSquare = squareFromAlgebraic(enPassent)!;
+      board.enPassant = squareFromAlgebraic(enPassent)!;
     }
 
     return board;
-  }
-
-  bool isSquareAttacked(int square, Side side) {
-    // attacked by white pawns
-    final isWhite = side == Side.white;
-
-    if ((isWhite) &&
-        (pawnAttacks[0][square] & pieceBitBoards[PieceType.wPawn]!)
-            .notEmpty()) {
-      return true;
-    }
-
-    // attacked by black pawns
-    if ((!isWhite) &&
-        (pawnAttacks[1][square] & pieceBitBoards[PieceType.bPawn]!)
-            .notEmpty()) {
-      return true;
-    }
-
-    // attacked by knights
-    if ((knightAttacks[square] &
-            ((isWhite)
-                ? pieceBitBoards[PieceType.wKnight]!
-                : pieceBitBoards[PieceType.bKnight]!))
-        .notEmpty()) return true;
-
-    // attacked by bishops
-    if ((getBishopAttacks(square, allPieces) &
-            ((isWhite)
-                ? pieceBitBoards[PieceType.wBishop]!
-                : pieceBitBoards[PieceType.bBishop]!))
-        .notEmpty()) return true;
-
-    // attacked by rooks
-    if ((getRookAttacks(square, allPieces) &
-            ((isWhite)
-                ? pieceBitBoards[PieceType.wRook]!
-                : pieceBitBoards[PieceType.bRook]!))
-        .notEmpty()) return true;
-
-    // attacked by bishops
-    if ((getQueenAttacks(square, allPieces) &
-            ((isWhite)
-                ? pieceBitBoards[PieceType.wQueen]!
-                : pieceBitBoards[PieceType.bQueen]!))
-        .notEmpty()) return true;
-
-    // attacked by kings
-    if ((kingAttacks[square] &
-            ((isWhite)
-                ? pieceBitBoards[PieceType.wKing]!
-                : pieceBitBoards[PieceType.bKing]!))
-        .notEmpty()) return true;
-
-    // by default return false
-    return false;
-  }
-
-  BitBoard getAttackedSquares(Side side) {
-    var bitboard = BitBoard(0);
-
-    for (var square = 0; square < 64; square++) {
-      if (isSquareAttacked(square, side)) {
-        bitboard = bitboard.setBit(square);
-      }
-    }
-
-    return bitboard;
   }
 }

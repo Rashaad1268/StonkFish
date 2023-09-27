@@ -32,7 +32,7 @@ class BitBoard {
 
   bool has(int square) {
     assert(square >= 0 && square < 64);
-    return getBit(square) != 0;
+    return getBit(square) == 1;
   }
 
   BitBoard popBit(int square) {
@@ -57,9 +57,9 @@ class BitBoard {
     return this;
   }
 
-  BitBoard operator -() => BitBoard(-value);
-
   BitBoard operator <<(int shift) => shl(shift);
+
+  BitBoard operator -() => BitBoard(-value);
 
   BitBoard xor(BitBoard other) => BitBoard(value ^ other.value);
   BitBoard operator ^(BitBoard other) => BitBoard(value ^ other.value);
@@ -73,6 +73,7 @@ class BitBoard {
   BitBoard minus(BitBoard other) => BitBoard(value - other.value);
   BitBoard operator -(BitBoard other) => BitBoard(value - other.value);
 
+  BitBoard operator ~() => BitBoard(~value);
   BitBoard complement() => BitBoard(~value);
 
   BitBoard operator *(int other) => BitBoard(value * other);

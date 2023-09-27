@@ -1,10 +1,6 @@
 import 'dart:collection';
 
-import 'package:engine/bitboard.dart';
-import 'package:engine/board.dart';
-import 'package:engine/constants.dart';
-import 'package:engine/magic_numbers.dart';
-import 'package:engine/utils.dart';
+import 'package:engine/engine.dart';
 
 final List<List<BitBoard>> pawnAttacks = [
   List.generate(64, (_) => BitBoard(0)), // White pawns
@@ -261,7 +257,6 @@ BitBoard getQueenAttacks(int square, BitBoard occupancy) {
       getRookAttacks(square, occupancy);
 }
 
-
 void initAttacks() {
   for (var square = 0; square < 64; square++) {
     final rank = getSquareRank(square);
@@ -279,4 +274,74 @@ void initAttacks() {
 
   initSliderAttacks(true);
   initSliderAttacks(false);
+}
+
+extension AttackGeneration on Board {
+  bool isSquareAttacked(int square, Side side) {
+    // attacked by white pawns
+    final isWhite = side == Side.white;
+
+    if ((isWhite) &&
+        (pawnAttacks[0][square] & pieceBitBoards[PieceType.wPawn]!)
+            .notEmpty()) {
+      return true;
+    }
+
+    // attacked by black pawns
+    if ((!isWhite) &&
+        (pawnAttacks[1][square] & pieceBitBoards[PieceType.bPawn]!)
+            .notEmpty()) {
+      return true;
+    }
+
+    // attacked by knights
+    if ((knightAttacks[square] &
+            ((isWhite)
+                ? pieceBitBoards[PieceType.wKnight]!
+                : pieceBitBoards[PieceType.bKnight]!))
+        .notEmpty()) return true;
+
+    // attacked by bishops
+    if ((getBishopAttacks(square, allPieces) &
+            ((isWhite)
+                ? pieceBitBoards[PieceType.wBishop]!
+                : pieceBitBoards[PieceType.bBishop]!))
+        .notEmpty()) return true;
+
+    // attacked by rooks
+    if ((getRookAttacks(square, allPieces) &
+            ((isWhite)
+                ? pieceBitBoards[PieceType.wRook]!
+                : pieceBitBoards[PieceType.bRook]!))
+        .notEmpty()) return true;
+
+    // attacked by bishops
+    if ((getQueenAttacks(square, allPieces) &
+            ((isWhite)
+                ? pieceBitBoards[PieceType.wQueen]!
+                : pieceBitBoards[PieceType.bQueen]!))
+        .notEmpty()) return true;
+
+    // attacked by kings
+    if ((kingAttacks[square] &
+            ((isWhite)
+                ? pieceBitBoards[PieceType.wKing]!
+                : pieceBitBoards[PieceType.bKing]!))
+        .notEmpty()) return true;
+
+    // by default return false
+    return false;
+  }
+
+  BitBoard getAttackedSquares(Side side) {
+    var bitboard = BitBoard(0);
+
+    for (var square = 0; square < 64; square++) {
+      if (isSquareAttacked(square, side)) {
+        bitboard = bitboard.setBit(square);
+      }
+    }
+
+    return bitboard;
+  }
 }

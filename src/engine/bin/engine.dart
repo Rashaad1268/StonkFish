@@ -1,33 +1,24 @@
-import 'dart:io';
-
 import 'package:engine/engine.dart';
+import 'package:engine/move_gen.dart';
 
 void main(List<String> arguments) {
   initAttacks();
 
-  var board = Board.startingPosition;
-// board.pieceBitBoards[PieceType.wPawn]!.printBoard();
-
+  var board = Board.empty;
+  board.turn = Side.black;
+  board.castlingRights = 0;
+  // var board = Board.startingPosition;
+  board.pieceBitBoards[PieceType.bQueen] = BitBoard(0).setBit(Squares.e5);
+  board.pieceBitBoards[PieceType.wPawn] = BitBoard(0).setBit(Squares.e6);
+  // board.pieceBitBoards[PieceType.bQueen]!.printBoard();
+  // board.blackPieces.printBoard();
+  // board.turn = Side.black;
+  // board.castlingRights = 0;
+  // board.pieceBitBoards[PieceType.bQueen] = BitBoard(0).setBit(Squares.d4);
+  // board.pieceBitBoards[PieceType.bPawn] = BitBoard(0).setBit(Squares.e5);
+  // board.enPassant = Squares.e6;
   board.printBoard();
-  print('\nEnter Move >>>');
-
-  while (true) {
-    final move = stdin.readLineSync();
-
-    if (move == null || move.length != 4) {
-      print("Invalid move bruh");
-      continue;
-    }
-
-    try {
-      board.makeMove(move);
-    } catch (error) {
-      if (error is ArgumentError) {
-        print(error.message);
-      }
-    }
-
-    board.printBoard();
-    print("IS check: ${board.isCheck}");
-  }
+  generateMoves(board);
+  // board
+  // generateMoves(board);
 }

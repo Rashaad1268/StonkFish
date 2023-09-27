@@ -86,6 +86,8 @@ enum Side {
   white,
   black;
 
+  bool get isWhite => this == white;
+
   Side opposite() => this == white ? black : white;
 }
 

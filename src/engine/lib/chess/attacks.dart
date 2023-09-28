@@ -201,6 +201,7 @@ void initSliderAttacks(bool isBishop) {
     int occupancyIndicies = (1 << relevantBitsCount);
 
     for (int index = 0; index < occupancyIndicies; index++) {
+      // print('x');
       if (isBishop) {
         // Bishop
         // Get the current occupancy variation
@@ -281,19 +282,12 @@ extension AttackGeneration on Board {
     // attacked by white pawns
     final isWhite = side == Side.white;
 
-    if ((isWhite) &&
-        (pawnAttacks[0][square] & pieceBitBoards[PieceType.wPawn]!)
-            .notEmpty()) {
-      return true;
-    }
-
+    // attacked by white pawns
+    if ((side.isWhite) && (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!).notEmpty()) return true;
+    
     // attacked by black pawns
-    if ((!isWhite) &&
-        (pawnAttacks[1][square] & pieceBitBoards[PieceType.bPawn]!)
-            .notEmpty()) {
-      return true;
-    }
-
+    if ((!side.isWhite) && (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!).notEmpty()) return true;
+    
     // attacked by knights
     if ((knightAttacks[square] &
             ((isWhite)

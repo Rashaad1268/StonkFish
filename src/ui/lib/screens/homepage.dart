@@ -8,8 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("StonkFish UI"),
+        title: const Text("StonkFish go brrr"),
       ),
       body: const Center(
         child: ChessBoard(),

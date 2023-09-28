@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'screens/homepage.dart';
 
 void main() {
+  initAttacks();
   runApp(const MyApp());
 }
 
@@ -11,15 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    initAttacks();
-
-    return MaterialApp(
+    return const MaterialApp(
       title: 'StonkFish chess engine',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }

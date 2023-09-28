@@ -1,7 +1,6 @@
-import 'package:engine/bitboard.dart';
+import 'package:engine/chess/bitboard.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
-export 'enums.dart';
 // ignore_for_file: constant_identifier_names
 
 const kFileNames = IListConst(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
@@ -158,8 +157,7 @@ abstract class Squares {
   static const h1 = 63;
 }
 
-// Trust me, these values are not random
-
+// Trust me, the values below are not random
 // Represents a board with all bits set to 1 except the bits in the A file
 const NOT_A_FILE = BitBoard(0xFEFEFEFEFEFEFEFE);
 

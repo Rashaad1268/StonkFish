@@ -1,6 +1,6 @@
 import "dart:io" show stdout;
 
-import "package:engine/enums.dart";
+import 'package:engine/chess/enums.dart';
 
 class BitBoard {
   /*

@@ -1,7 +1,7 @@
 export './constants.dart';
 export './utils.dart';
-export './enums.dart';
-export './bitboard.dart';
-export './board.dart';
-export './attacks.dart';
-export './magic_numbers.dart';
+export 'chess/enums.dart';
+export 'chess/bitboard.dart';
+export 'chess/board.dart';
+export 'chess/attacks.dart';
+export 'chess/magic_numbers.dart';

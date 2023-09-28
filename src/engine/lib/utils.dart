@@ -1,5 +1,4 @@
-import 'package:engine/bitboard.dart';
-import 'package:engine/constants.dart';
+import 'package:engine/engine.dart';
 
 int getSquareRank(int square) => (square >> 3);
 
@@ -61,43 +60,6 @@ BitBoard setOccupancy(int index, int bitsInMask, BitBoard attackMask) {
   }
 
   return occupancy;
-}
-
-int randomState = 1804289383;
-
-// generate 32-bit pseudo legal numbers
-int getRandomNum() {
-  int number = randomState;
-
-  // XOR shift algorithm
-  number ^= number << 13;
-  number ^= number >> 17;
-  number ^= number << 5;
-
-  // update random number state
-  randomState = number;
-
-  return number;
-}
-
-// generate 64-bit pseudo legal numbers
-int getRandom64BitNumber() {
-  int n1, n2, n3, n4;
-
-  // init random numbers slicing 16 bits from MS1B side
-  n1 = (getRandomNum()) & 0xFFFF;
-  n2 = (getRandomNum()) & 0xFFFF;
-  n3 = (getRandomNum()) & 0xFFFF;
-  n4 = (getRandomNum()) & 0xFFFF;
-
-  return n1 | (n2 << 16) | (n3 << 32) | (n4 << 48);
-}
-
-// generate magic number candidate
-int generateMagicNumber() {
-  return getRandom64BitNumber() &
-      getRandom64BitNumber() &
-      getRandom64BitNumber();
 }
 
 String castlingRightsToStr(int rights) {

@@ -32,7 +32,7 @@ void main() {
       }
 
       try {
-        board.makeMove(move);
+        // board.makeMove(move);
       } catch (error) {
         if (error is ArgumentError) {
           await event.message.channel

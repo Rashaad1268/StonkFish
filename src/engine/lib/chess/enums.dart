@@ -46,6 +46,9 @@ abstract class CastlingRights {
   static const wQueenSide = 2;
   static const bKingSide = 4;
   static const bQueenSide = 8;
+
+  static const white = wKingSide | wQueenSide;
+  static const black = bKingSide | bQueenSide;
 }
 
 const IMapConst<PieceType, String> asciiPieces = IMapConst({
@@ -105,20 +108,37 @@ class Move {
   final PieceType? promotedPiece;
   final int flags;
 
-  Move(
+  const Move(
       {required this.from,
       required this.to,
       required this.piece,
-      required this.promotedPiece,
+      this.promotedPiece,
       required this.flags});
 
   @override
   bool operator ==(Object other) {
-    return other is Move && other.from == from && other.to == to;
+    return other is Move &&
+        other.from == from &&
+        other.to == to &&
+        other.flags == flags &&
+        other.piece == piece &&
+        other.promotedPiece == promotedPiece;
   }
 
   @override
   int get hashCode => from.hashCode + to.hashCode;
+
+  bool get isQuiet => flags == 0;
+  bool get isDoublePush => flags == MoveFlags.doublePush;
+  bool get isKingSideCastle => flags == MoveFlags.kingSideCastle;
+  bool get isQueenSideCastle => flags == MoveFlags.queenSideCastle;
+  bool get isEnPassant => flags == MoveFlags.enPassant;
+  bool get isPawnPromotion => promotedPiece != null;
+  bool get isPawnPromotionCapture => flags == MoveFlags.promotionCapture;
+
+  bool get isCapture =>
+      flags & MoveFlags.capture !=
+      0; // Note: Use & to only check for the capture flags
 }
 
 abstract class MoveFlags {
@@ -127,14 +147,8 @@ abstract class MoveFlags {
   static const int kingSideCastle = 2;
   static const int queenSideCastle = 3;
   static const int capture = 8;
-  static const int captures = 15;
+  // static const int captures = 15;
   static const int enPassant = 10;
-  static const int promotions = 7;
-  static const int promotionCaptures = 12;
-
-  static const int prKnight = 4;
-  static const int prBishop = 5;
-  static const int prRook = 6;
-  static const int pcBishop = 13;
-  static const int pcRook = 14;
+  // static const int promotion = 7;
+  static const int promotionCapture = 12;
 }

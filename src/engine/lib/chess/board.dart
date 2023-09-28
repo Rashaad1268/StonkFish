@@ -1,17 +1,16 @@
 import 'dart:collection';
 
-import 'package:engine/bitboard.dart';
-import 'package:engine/constants.dart';
-import 'package:engine/utils.dart';
-import 'package:engine/attacks.dart';
+import 'package:engine/engine.dart';
+export 'package:engine/chess/move_gen.dart';
+export 'package:engine/chess/move_maker.dart';
 
 class Board {
-  Side? turn;
-  int? castlingRights;
+  Side turn;
+  int castlingRights;
   int? enPassant;
   final movesPlayed = <Move>[];
 
-  late final HashMap<PieceType, BitBoard> pieceBitBoards;
+  final HashMap<PieceType, BitBoard> pieceBitBoards = HashMap();
 
   Board(
       {required this.turn,
@@ -29,7 +28,6 @@ class Board {
       required blackBishops,
       required blackKnights,
       required blackPawns}) {
-    pieceBitBoards = HashMap();
     pieceBitBoards[PieceType.wKing] = whiteKing;
     pieceBitBoards[PieceType.wQueen] = whiteQueens;
     pieceBitBoards[PieceType.wRook] = whiteRooks;
@@ -66,8 +64,8 @@ class Board {
       blackPawns: BitBoard(65280, pieceType: PieceType.bPawn));
 
   static final empty = Board(
-      castlingRights: null,
-      turn: null,
+      castlingRights: 0,
+      turn: Side.white,
       enPassant: null,
       whiteKing: BitBoard(0, pieceType: PieceType.wKing),
       whiteQueens: BitBoard(0, pieceType: PieceType.wQueen),
@@ -100,12 +98,13 @@ class Board {
 
   BitBoard get allPieces => whitePieces | blackPieces;
 
-  bool get isCheck {
-    return (pieceBitBoards[PieceType.wKing]! & getAttackedSquares(Side.black))
-            .notEmpty() ||
-        (pieceBitBoards[PieceType.bKing]! & getAttackedSquares(Side.white))
-            .notEmpty();
-  }
+  bool get isCheck => whiteIsChecked || blackIsChecked;
+  bool get whiteIsChecked =>
+      (pieceBitBoards[PieceType.wKing]! & getAttackedSquares(Side.black))
+          .notEmpty();
+  bool get blackIsChecked =>
+      (pieceBitBoards[PieceType.bKing]! & getAttackedSquares(Side.white))
+          .notEmpty();
 
   BitBoard piecesOf(Side side) {
     return side == Side.white ? whitePieces : blackPieces;
@@ -172,35 +171,6 @@ class Board {
     return null;
   }
 
-  void makeMove(String move) {
-    final from = squareFromAlgebraic(move.substring(0, 2));
-    final to = squareFromAlgebraic(move.substring(2, 4));
-
-    if (from == null || to == null) {
-      throw ArgumentError('Invalid move supplied');
-    }
-
-    final pieceBeingMoved = getPieceInSquare(from);
-
-    if (pieceBeingMoved == null) {
-      throw ArgumentError('Invalid move supplied');
-    }
-
-    // pieceBeingMoved.idx is the id assigned to the piece, 0-5 is white pieces and 6-11 are black pieces
-    if (turn != pieceBeingMoved.side) {
-      throw ArgumentError("You can't move the pieces of the other side");
-    } else if (turn == Side.black && pieceBeingMoved.idx < 6) {
-      throw ArgumentError("You can't move the pieces of the other side");
-    }
-
-    var bitBoard = pieceBitBoards[pieceBeingMoved]!;
-    bitBoard = bitBoard.popBit(from);
-    bitBoard = bitBoard.setBit(to);
-    pieceBitBoards[pieceBeingMoved] = bitBoard;
-
-    turn = turn!.opposite();
-  }
-
   String toFen() {
     /* Converts the current position into FEN */
 
@@ -230,7 +200,7 @@ class Board {
 
     fen += turn == Side.white ? " w" : " b";
 
-    fen += " ${castlingRightsToStr(castlingRights!)} ";
+    fen += " ${castlingRightsToStr(castlingRights)} ";
 
     if (enPassant != null) {
       fen += squareToAlgebraic(enPassant!);

@@ -615,15 +615,16 @@ extension MoveGeneration on Board {
     List<Move> moves = [];
 
     final copyOfBoard = toCopy();
-    final currentTurn = copyOfBoard.turn;
 
-    // print((pseudoLegalMoves ?? generatePseudoLegalMoves()));
-    // print((pseudoLegalMoves ?? generatePseudoLegalMoves()).length);
-    // return moves;
     for (final move in (pseudoLegalMoves ?? generatePseudoLegalMoves())) {
       makeMove(move, validate: false);
 
-      if (!(currentTurn.isWhite ? whiteIsChecked : blackIsChecked)) {
+      if (!(isSquareAttacked(
+          (turn.isWhite)
+              ? getLs1bIndex(pieceBitBoards[PieceType.bKing]!.value)
+              : getLs1bIndex(pieceBitBoards[PieceType.wKing]!.value),
+          turn))) {
+        // If the king is not in check, it is a legal move
         moves.add(move);
       }
 

@@ -98,13 +98,11 @@ class Board {
 
   BitBoard get allPieces => whitePieces | blackPieces;
 
-  bool get isCheck => whiteIsChecked || blackIsChecked;
-  bool get whiteIsChecked =>
-      (pieceBitBoards[PieceType.wKing]! & getAttackedSquares(Side.black))
-          .notEmpty();
-  bool get blackIsChecked =>
-      (pieceBitBoards[PieceType.bKing]! & getAttackedSquares(Side.white))
-          .notEmpty();
+  bool get isCheck => isSquareAttacked(
+      getLs1bIndex(turn.isWhite
+          ? pieceBitBoards[PieceType.wKing]!.value
+          : pieceBitBoards[PieceType.bKing]!.value),
+      turn.opposite());
 
   BitBoard piecesOf(Side side) {
     return side == Side.white ? whitePieces : blackPieces;

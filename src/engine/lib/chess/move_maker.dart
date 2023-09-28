@@ -16,14 +16,7 @@ extension MoveMaker on Board {
       pieceBitBoards[pieceWhichWasCut] =
           pieceBitBoards[pieceWhichWasCut]!.popBit(move.to);
 
-      if (pieceWhichWasCut.isPawn) {
-        // Check if the square behind the pawn which was cut is equal to Board.enPassant
-        // if so, set Board.enPassant to null
-        final oldEnPassant = (move.piece.side.isWhite) ? move.to-8 : move.to+8;
-        if (oldEnPassant == enPassant) {
-          enPassant = null;
-        }
-      }
+      enPassant = null; // Reset en passant square on captures
     }
 
     var bitBoard = pieceBitBoards[move.piece]!;

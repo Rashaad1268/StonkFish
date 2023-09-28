@@ -201,7 +201,6 @@ void initSliderAttacks(bool isBishop) {
     int occupancyIndicies = (1 << relevantBitsCount);
 
     for (int index = 0; index < occupancyIndicies; index++) {
-      // print('x');
       if (isBishop) {
         // Bishop
         // Get the current occupancy variation
@@ -260,13 +259,9 @@ BitBoard getQueenAttacks(int square, BitBoard occupancy) {
 
 void initAttacks() {
   for (var square = 0; square < 64; square++) {
-    final rank = getSquareRank(square);
-
-    // No need to mask attacks for the 1st and 8th ranks
-    if (rank != 0 && rank != 7) {
-      pawnAttacks[0][square] = maskPawnAttacks(square, side: Side.white);
-      pawnAttacks[1][square] = maskPawnAttacks(square, side: Side.black);
-    }
+    // We also need to mask attacks for the 1th and 8th ranks
+    pawnAttacks[0][square] = maskPawnAttacks(square, side: Side.white);
+    pawnAttacks[1][square] = maskPawnAttacks(square, side: Side.black);
 
     knightAttacks[square] = maskKnightAttacks(square);
 
@@ -283,11 +278,15 @@ extension AttackGeneration on Board {
     final isWhite = side == Side.white;
 
     // attacked by white pawns
-    if ((side.isWhite) && (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!).notEmpty()) return true;
-    
+    if ((side.isWhite) &&
+        (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!).notEmpty())
+      return true;
+
     // attacked by black pawns
-    if ((!side.isWhite) && (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!).notEmpty()) return true;
-    
+    if ((side == Side.black) &&
+        (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!).notEmpty())
+      return true;
+
     // attacked by knights
     if ((knightAttacks[square] &
             ((isWhite)
@@ -325,17 +324,5 @@ extension AttackGeneration on Board {
 
     // by default return false
     return false;
-  }
-
-  BitBoard getAttackedSquares(Side side) {
-    var bitboard = BitBoard(0);
-
-    for (var square = 0; square < 64; square++) {
-      if (isSquareAttacked(square, side)) {
-        bitboard = bitboard.setBit(square);
-      }
-    }
-
-    return bitboard;
   }
 }

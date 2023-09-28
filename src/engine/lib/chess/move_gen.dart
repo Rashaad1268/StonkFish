@@ -59,14 +59,6 @@ extension MoveGeneration on Board {
                     to: targetSquare,
                     promotedPiece: PieceType.wKnight,
                     flags: 0));
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (q)");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (r)");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (b)");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (n)");
               } else {
                 // one square ahead pawn move
                 moves.add(Move(
@@ -74,12 +66,8 @@ extension MoveGeneration on Board {
                     from: sourceSquare,
                     to: targetSquare,
                     flags: 0));
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn push\n",
-                // );
 
                 // two squares ahead pawn move
-                // if ((sourceSquare >= Squares.a2 && sourceSquare <= Squares.h2) && !get_bit(occupancies[both], targetSquare - 8))
                 if ((sourceSquare >= Squares.a2 &&
                         sourceSquare <= Squares.h2) &&
                     allPieces.getBit(targetSquare - 8) != 1) {
@@ -88,8 +76,6 @@ extension MoveGeneration on Board {
                       from: sourceSquare,
                       to: targetSquare - 8,
                       flags: MoveFlags.doublePush));
-                  // print(
-                  // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare - 8)} double pawn push\n");
                 }
               }
             }
@@ -130,14 +116,6 @@ extension MoveGeneration on Board {
                     to: targetSquare,
                     promotedPiece: PieceType.wKnight,
                     flags: MoveFlags.promotionCapture));
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (q) capture");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (r) capture");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (b) capture");
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn promotion (n) capture");
               } else {
                 // one square ahead pawn move
                 moves.add(Move(
@@ -145,8 +123,6 @@ extension MoveGeneration on Board {
                     from: sourceSquare,
                     to: targetSquare,
                     flags: MoveFlags.capture));
-                // print(
-                // "${squareToAlgebraic(sourceSquare)} ${squareToAlgebraic(targetSquare)} pawn capture\n");
               }
 
               // pop ls1b of the pawn attacks
@@ -645,7 +621,7 @@ extension MoveGeneration on Board {
     // print((pseudoLegalMoves ?? generatePseudoLegalMoves()).length);
     // return moves;
     for (final move in (pseudoLegalMoves ?? generatePseudoLegalMoves())) {
-      makeMove(move);
+      makeMove(move, validate: false);
 
       if (!(currentTurn.isWhite ? whiteIsChecked : blackIsChecked)) {
         moves.add(move);

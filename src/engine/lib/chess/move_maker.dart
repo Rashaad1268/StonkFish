@@ -1,8 +1,7 @@
 import 'package:engine/engine.dart';
-import 'package:engine/chess/move_gen.dart';
 
 extension MoveMaker on Board {
-  void makeMove(Move move, {bool validate = false}) {
+  void makeMove(Move move, {bool validate = true}) {
     if (validate) {
       if (turn != move.piece.side) {
         throw ArgumentError("You can't move the pieces of the other side");
@@ -11,8 +10,8 @@ extension MoveMaker on Board {
 
     handleCastling(board: this, move: move);
 
-    // Handle Captures
-    if (piecesOf(move.piece.side.opposite()).has(move.to)) {
+    // Handle captures except en passant
+    if (move.isCapture && !move.isEnPassant) {
       final pieceWhichWasCut = getPieceInSquare(move.to)!;
       pieceBitBoards[pieceWhichWasCut] =
           pieceBitBoards[pieceWhichWasCut]!.popBit(move.to);
@@ -20,8 +19,8 @@ extension MoveMaker on Board {
       if (pieceWhichWasCut.isPawn) {
         // Check if the square behind the pawn which was cut is equal to Board.enPassant
         // if so, set Board.enPassant to null
-        final offset = (move.piece.side.isWhite) ? -8 : 8;
-        if ((move.to + offset) == enPassant) {
+        final oldEnPassant = (move.piece.side.isWhite) ? move.to-8 : move.to+8;
+        if (oldEnPassant == enPassant) {
           enPassant = null;
         }
       }

@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:engine/engine.dart';
 
-// import 'package:engine/attacks_cache.dart';
+
 void main(List<String> arguments) {
   initAttacks();
 
-  var board = Board.empty;
-  board.pieceBitBoards[PieceType.wPawn] = BitBoard(0).setBit(Squares.f7);
-  pawnAttacks[0][getLs1bIndex(board.pieceBitBoards[PieceType.wPawn]!.value)].printBoard();
-  print(pawnAttacks[0][getLs1bIndex(board.pieceBitBoards[PieceType.wPawn]!.value)].has(Squares.e8));
-  print(board.isSquareAttacked(Squares.e8, Side.white));
-  // pawnAttacks[0][Squares.f7].printBoard();
+  var board = Board.fromFen(
+      'r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10');
+
+  print(perft(maxDepth: 5, depth: 5, board: board));
+
 }

@@ -2,6 +2,9 @@ import 'package:engine/engine.dart';
 
 extension MoveMaker on Board {
   void makeMove(Move move, {bool validate = true}) {
+    assert((move.from < 64) && (move.from >= 0));
+    assert((move.to < 64) && (move.to >= 0));
+
     if (validate) {
       if (turn != move.piece.side) {
         throw ArgumentError("You can't move the pieces of the other side");
@@ -11,13 +14,7 @@ extension MoveMaker on Board {
     handleCastling(board: this, move: move);
 
     // Handle captures except en passant
-    if (move.isCapture && !move.isEnPassant) {
-      final pieceWhichWasCut = getPieceInSquare(move.to)!;
-      pieceBitBoards[pieceWhichWasCut] =
-          pieceBitBoards[pieceWhichWasCut]!.popBit(move.to);
-
-      enPassant = null; // Reset en passant square on captures
-    }
+    handleCaptures(board: this, move: move);
 
     var bitBoard = pieceBitBoards[move.piece]!;
     bitBoard = bitBoard.popBit(move.from);
@@ -27,9 +24,51 @@ extension MoveMaker on Board {
     handleEnPassant(board: this, move: move);
     handlePawnPromotion(board: this, move: move);
 
-    movesPlayed.add(move);
+    if (validate) {
+      movesPlayed.add(move);
+    }
 
     turn = turn.opposite();
+  }
+}
+
+void handleCaptures({required Board board, required Move move}) {
+  if (move.isCapture && !move.isEnPassant) {
+    final pieceWhichWasCut = board.getPieceInSquare(move.to)!;
+    board.pieceBitBoards[pieceWhichWasCut] =
+        board.pieceBitBoards[pieceWhichWasCut]!.popBit(move.to);
+
+    // Check if the square behind the piece which was captured is equal to Board.enPassant
+    // if so, set Board.enPassant to null
+    final oldEnPassant = (move.piece.side.isWhite) ? move.to - 8 : move.to + 8;
+    if (oldEnPassant == board.enPassant) {
+      board.enPassant = null;
+    }
+
+    // Update castling rights incase of rook capture
+    if (pieceWhichWasCut.isRook) {
+      if (pieceWhichWasCut.side == Side.white) {
+        if ((move.to == Squares.h1) &&
+            ((board.castlingRights & CastlingRights.wKingSide) > 0)) {
+          board.castlingRights =
+              board.castlingRights ^ CastlingRights.wKingSide;
+        } else if (move.to == Squares.a1 &&
+            ((board.castlingRights & CastlingRights.wQueenSide) > 0)) {
+          board.castlingRights =
+              board.castlingRights ^ CastlingRights.wQueenSide;
+        }
+      } else {
+        if (move.to == Squares.h8 &&
+            ((board.castlingRights & CastlingRights.bKingSide) > 0)) {
+          board.castlingRights =
+              board.castlingRights ^ CastlingRights.bKingSide;
+        } else if (move.to == Squares.a8 &&
+            ((board.castlingRights & CastlingRights.bQueenSide) > 0)) {
+          board.castlingRights =
+              board.castlingRights ^ CastlingRights.bQueenSide;
+        }
+      }
+    }
   }
 }
 
@@ -127,6 +166,7 @@ void handleCastling({required Board board, required Move move}) {
 }
 
 void handleEnPassant({required Board board, required Move move}) {
+  // Make sure the move was played by the player instead of the generateLegalMoves() function
   if (move.isDoublePush) {
     board.enPassant = (move.piece.side.isWhite) ? move.to + 8 : move.to - 8;
   }
@@ -140,6 +180,7 @@ void handleEnPassant({required Board board, required Move move}) {
     board.pieceBitBoards[opponentPawnType] =
         board.pieceBitBoards[opponentPawnType]!.popBit(captureSquare);
   }
+  if (!move.isDoublePush) board.enPassant = null; // Reset en passant square
 }
 
 void handlePawnPromotion({required Board board, required Move move}) {

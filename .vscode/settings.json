@@ -1,15 +1,16 @@
 {
-    "[dart]": {
-        "editor.formatOnSave": true
-    },
+  "[dart]": {
+    "editor.formatOnSave": true
+  },
 
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        //  "src/engine/lib/chess/attacks_cache.dart": true,       
-    }
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+    //  "src/engine/lib/chess/attacks_cache.dart": true,
+  },
+  "cSpell.words": ["perft"]
 }

@@ -17,9 +17,15 @@ class _ChessBoardState extends State<ChessBoard> {
   var errorMessage = '';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final boardSize = MediaQuery.of(context).size.height - 250;
     legalMoves = board.generateLegalMoves();
+    // print(legalMoves);
 
     return Column(
       children: [

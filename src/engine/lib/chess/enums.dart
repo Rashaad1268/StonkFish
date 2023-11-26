@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:engine/constants.dart';
+import 'package:engine/engine.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 enum PieceType {
@@ -51,7 +51,7 @@ abstract class CastlingRights {
   static const black = bKingSide | bQueenSide;
 }
 
-const IMapConst<PieceType, String> asciiPieces = IMapConst({
+HashMap<PieceType, String> asciiPieces = HashMap.from({
   PieceType.wKing: "K",
   PieceType.wQueen: "Q",
   PieceType.wRook: "R",
@@ -66,22 +66,8 @@ const IMapConst<PieceType, String> asciiPieces = IMapConst({
   PieceType.bPawn: "p",
 });
 
-const IMapConst<PieceType, String> pieceToAscii = IMapConst({
-  PieceType.wKing: "K",
-  PieceType.wQueen: "Q",
-  PieceType.wRook: "R",
-  PieceType.wBishop: "B",
-  PieceType.wKnight: "N",
-  PieceType.wPawn: "P",
-  PieceType.bKing: "k",
-  PieceType.bQueen: "q",
-  PieceType.bRook: "r",
-  PieceType.bBishop: "b",
-  PieceType.bKnight: "n",
-  PieceType.bPawn: "p",
-});
 
-const IMapConst<PieceType, String> unicodePieces = IMapConst({
+HashMap<PieceType, String> unicodePieces = HashMap.from({
   PieceType.bPawn: "♙",
   PieceType.bKnight: "♘",
   PieceType.bBishop: "♗",
@@ -123,6 +109,11 @@ class Move {
         other.flags == flags &&
         other.piece == piece &&
         other.promotedPiece == promotedPiece;
+  }
+
+@override
+  String toString() {
+    return "${squareToAlgebraic(from)} ${squareToAlgebraic(to)} ${promotedPiece!=null ? asciiPieces[promotedPiece!] : ''}";
   }
 
   @override

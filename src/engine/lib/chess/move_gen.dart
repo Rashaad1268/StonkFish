@@ -1,4 +1,3 @@
-import 'package:engine/chess/board_copy.dart';
 import 'package:engine/engine.dart';
 
 extension MoveGeneration on Board {
@@ -615,22 +614,23 @@ extension MoveGeneration on Board {
     List<Move> moves = [];
 
     final copyOfBoard = toCopy();
+    final currentTurn = copyOfBoard.turn;
+
+    whiteIsChecked() => isSquareAttacked(
+        getLs1bIndex(pieceBitBoards[PieceType.wKing]!.value), Side.black);
+    blackIsChecked() => isSquareAttacked(
+        getLs1bIndex(pieceBitBoards[PieceType.bKing]!.value), Side.white);
 
     for (final move in (pseudoLegalMoves ?? generatePseudoLegalMoves())) {
       makeMove(move, validate: false);
 
-      if (!(isSquareAttacked(
-          (turn.isWhite)
-              ? getLs1bIndex(pieceBitBoards[PieceType.bKing]!.value)
-              : getLs1bIndex(pieceBitBoards[PieceType.wKing]!.value),
-          turn))) {
+      if (!(currentTurn.isWhite ? whiteIsChecked() : blackIsChecked())) {
         // If the king is not in check, it is a legal move
         moves.add(move);
       }
 
       revertTo(copyOfBoard);
     }
-
     return moves;
   }
 }

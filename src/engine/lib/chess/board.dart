@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:engine/engine.dart';
 export 'package:engine/chess/move_gen.dart';
+export 'package:engine/chess/board_copy.dart';
 export 'package:engine/chess/move_maker.dart';
 
 class Board {
@@ -10,7 +11,7 @@ class Board {
   int? enPassant;
   final movesPlayed = <Move>[];
 
-  final HashMap<PieceType, BitBoard> pieceBitBoards = HashMap();
+  HashMap<PieceType, BitBoard> pieceBitBoards = HashMap();
 
   Board(
       {required this.turn,

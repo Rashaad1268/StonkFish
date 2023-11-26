@@ -1,8 +1,9 @@
+import 'dart:collection';
+
 import 'package:engine/engine.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 class BoardCopy {
-  final IMap<PieceType, BitBoard> pieceBitBoards;
+  final HashMap<PieceType, BitBoard> pieceBitBoards;
   final Side turn;
   final int castlingRights;
   final int? enPassant;
@@ -19,7 +20,7 @@ class BoardCopy {
 extension BoardState on Board {
   BoardCopy toCopy() {
     return BoardCopy(
-        pieceBitBoards: pieceBitBoards.lock,
+        pieceBitBoards: HashMap.from({...pieceBitBoards}),
         turn: turn,
         castlingRights: castlingRights,
         enPassant: enPassant,
@@ -27,7 +28,7 @@ extension BoardState on Board {
   }
 
   void revertTo(BoardCopy copy) {
-    pieceBitBoards.addAll(copy.pieceBitBoards.unlock);
+    pieceBitBoards.addAll(copy.pieceBitBoards);
     turn = copy.turn;
     castlingRights = copy.castlingRights;
     enPassant = copy.enPassant;

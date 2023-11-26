@@ -5,3 +5,4 @@ export 'chess/bitboard.dart';
 export 'chess/board.dart';
 export 'chess/attacks.dart';
 export 'chess/magic_numbers.dart';
+export 'chess/perft.dart';

@@ -1,12 +1,18 @@
 import 'package:engine/engine.dart';
 
+import 'interactive_cli.dart';
 
 void main(List<String> arguments) {
   initAttacks();
 
-  var board = Board.fromFen(
-      'r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10');
+  // var board = Board.fromFen(
+  //     'rnbqkbnr/1ppp1ppp/8/p3p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4');
 
-  print(perft(maxDepth: 5, depth: 5, board: board));
+  // // board.printBoard();
+  // print(board.evaluate());
+  // board.searchPosition(2);
+  final board = Board.startingPosition;
+  interactiveCliMatch(board);
 
+  board.searchPosition(3);
 }

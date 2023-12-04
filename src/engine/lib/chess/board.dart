@@ -9,7 +9,8 @@ class Board {
   Side turn;
   int castlingRights;
   int? enPassant;
-  final movesPlayed = <Move>[];
+  int halfMoveClock;
+  final movesPlayed = <Move?>[];
 
   HashMap<PieceType, BitBoard> pieceBitBoards = HashMap();
 
@@ -17,6 +18,7 @@ class Board {
       {required this.turn,
       required this.enPassant,
       required this.castlingRights,
+      required this.halfMoveClock,
       required whiteKing,
       required whiteQueens,
       required whiteRooks,
@@ -49,6 +51,7 @@ class Board {
           CastlingRights.wQueenSide |
           CastlingRights.bKingSide |
           CastlingRights.bQueenSide,
+      halfMoveClock: 0,
       turn: Side.white,
       enPassant: null,
       whiteKing: BitBoard(1152921504606846976, pieceType: PieceType.wKing),
@@ -66,6 +69,7 @@ class Board {
 
   static final empty = Board(
       castlingRights: 0,
+      halfMoveClock: 0,
       turn: Side.white,
       enPassant: null,
       whiteKing: BitBoard(0, pieceType: PieceType.wKing),
@@ -104,6 +108,8 @@ class Board {
           ? pieceBitBoards[PieceType.wKing]!.value
           : pieceBitBoards[PieceType.bKing]!.value),
       turn.opposite());
+
+  int get fullMoveNumber => (movesPlayed.length / 2 + 1).floor();
 
   BitBoard piecesOf(Side side) {
     return side == Side.white ? whitePieces : blackPieces;
@@ -207,7 +213,8 @@ class Board {
       fen += "- ";
     }
 
-    fen += "-"; // TODO: Calculate the value of this...
+    fen += "$halfMoveClock ";
+    fen += "$fullMoveNumber";
 
     return fen;
   }
@@ -221,7 +228,9 @@ class Board {
     final pieceFen = _fen[0];
     final moveTurn = _fen[1];
     final castlingRights = _fen[2];
-    final enPassent = _fen[3];
+    final enPassant = _fen[3];
+    final halfMoveClock = int.tryParse(_fen.elementAtOrNull(4) ?? '0');
+    final fullMoveNumber = int.tryParse(_fen.elementAtOrNull(5) ?? '0');
 
     for (String char in pieceFen.split('')) {
       if (int.tryParse(char) != null) {
@@ -246,8 +255,16 @@ class Board {
 
     board.castlingRights = castlingRightsFromStr(castlingRights);
 
-    if (enPassent != "-") {
-      board.enPassant = squareFromAlgebraic(enPassent)!;
+    if (enPassant != "-") {
+      board.enPassant = squareFromAlgebraic(enPassant)!;
+    }
+
+    board.halfMoveClock = halfMoveClock ?? 0;
+
+    if (fullMoveNumber != null && fullMoveNumber > 0) {
+      for (var i = 0; i < (fullMoveNumber*2 - (board.turn.isWhite ? 2 : 1)); i++) {
+        board.movesPlayed.add(null);
+      }
     }
 
     return board;

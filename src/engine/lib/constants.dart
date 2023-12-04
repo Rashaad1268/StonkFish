@@ -1,12 +1,11 @@
-import 'package:engine/chess/bitboard.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:engine/engine.dart';
 
 // ignore_for_file: constant_identifier_names
 
-const kFileNames = IListConst(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
-const kRankNames = IListConst(['1', '2', '3', '4', '5', '6', '7', '8']);
+const kFileNames = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const kRankNames = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-const squareToCoord = IListConst([
+const squareToCoord = [
   "a8",
   "b8",
   "c8",
@@ -71,12 +70,9 @@ const squareToCoord = IListConst([
   "f1",
   "g1",
   "h1",
-]);
+];
 
-const startPosFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
-
-/// Initial position in the Extended Position Description format.
-const initialPosEPD = '$startPosFEN w KQkq - 0 1';
+const startPosFEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 const trickyPosition =
     "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
@@ -170,7 +166,7 @@ const NOT_H_FILE = BitBoard(0x7F7F7F7F7F7F7F7F);
 // A board with all bits set to 1 except the bits in the H file and the G file
 const NOT_HG_FILE = BitBoard(0x3F3F3F3F3F3F3F3F);
 
-const bishopRelevantBits = IListConst([
+const bishopRelevantBits = [
   6,
   5,
   5,
@@ -235,9 +231,9 @@ const bishopRelevantBits = IListConst([
   5,
   5,
   6
-]);
+];
 
-const rookRelevantBits = IListConst([
+const rookRelevantBits = [
   12,
   11,
   11,
@@ -302,4 +298,4 @@ const rookRelevantBits = IListConst([
   11,
   11,
   12
-]);
+];

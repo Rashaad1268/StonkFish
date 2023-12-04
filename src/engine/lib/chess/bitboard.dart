@@ -96,7 +96,7 @@ class BitBoard {
     return "BitBoard($value)";
   }
 
-  bool notEmpty() => value != 0;
+  bool get notEmpty => value != 0;
 
   printBoard({bool showBoardValue = true}) {
     print('');

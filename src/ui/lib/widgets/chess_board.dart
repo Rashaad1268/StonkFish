@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chessground/chessground.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,9 @@ class _ChessBoardState extends State<ChessBoard> {
                               role: move.promotion, side: board.turn) ==
                           m.promotedPiece);
                   board.makeMove(moveToMake);
+
+                  board.searchPosition(4);
+                  board.makeMove(engine.Eval.bestMove!);
                 });
               } catch (error) {
                 if (error is ArgumentError) {

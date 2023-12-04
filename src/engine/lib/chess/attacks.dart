@@ -26,12 +26,12 @@ BitBoard maskPawnAttacks(int square, {required Side side}) {
 
   if (side == Side.white) {
     // generate white pawn attacks
-    if (((bitboard >> 7) & NOT_A_FILE).notEmpty()) attacks |= (bitboard >> 7);
-    if (((bitboard >> 9) & NOT_H_FILE).notEmpty()) attacks |= (bitboard >> 9);
+    if (((bitboard >> 7) & NOT_A_FILE).notEmpty) attacks |= (bitboard >> 7);
+    if (((bitboard >> 9) & NOT_H_FILE).notEmpty) attacks |= (bitboard >> 9);
   } else {
     // generate black pawn attacks
-    if (((bitboard << 7) & NOT_H_FILE).notEmpty()) attacks |= (bitboard << 7);
-    if (((bitboard << 9) & NOT_A_FILE).notEmpty()) attacks |= (bitboard << 9);
+    if (((bitboard << 7) & NOT_H_FILE).notEmpty) attacks |= (bitboard << 7);
+    if (((bitboard << 9) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 9);
   }
 
   return attacks;
@@ -41,14 +41,14 @@ BitBoard maskKnightAttacks(int square) {
   final bitboard = BitBoard(0).setBit(square);
   var attacks = BitBoard(0);
 
-  if (((bitboard >> 17) & NOT_H_FILE).notEmpty()) attacks |= (bitboard >> 17);
-  if (((bitboard >> 15) & NOT_A_FILE).notEmpty()) attacks |= (bitboard >> 15);
-  if (((bitboard >> 10) & NOT_HG_FILE).notEmpty()) attacks |= (bitboard >> 10);
-  if (((bitboard >> 6) & NOT_AB_FILE).notEmpty()) attacks |= (bitboard >> 6);
-  if (((bitboard << 17) & NOT_A_FILE).notEmpty()) attacks |= (bitboard << 17);
-  if (((bitboard << 15) & NOT_H_FILE).notEmpty()) attacks |= (bitboard << 15);
-  if (((bitboard << 10) & NOT_AB_FILE).notEmpty()) attacks |= (bitboard << 10);
-  if (((bitboard << 6) & NOT_HG_FILE).notEmpty()) attacks |= (bitboard << 6);
+  if (((bitboard >> 17) & NOT_H_FILE).notEmpty) attacks |= (bitboard >> 17);
+  if (((bitboard >> 15) & NOT_A_FILE).notEmpty) attacks |= (bitboard >> 15);
+  if (((bitboard >> 10) & NOT_HG_FILE).notEmpty) attacks |= (bitboard >> 10);
+  if (((bitboard >> 6) & NOT_AB_FILE).notEmpty) attacks |= (bitboard >> 6);
+  if (((bitboard << 17) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 17);
+  if (((bitboard << 15) & NOT_H_FILE).notEmpty) attacks |= (bitboard << 15);
+  if (((bitboard << 10) & NOT_AB_FILE).notEmpty) attacks |= (bitboard << 10);
+  if (((bitboard << 6) & NOT_HG_FILE).notEmpty) attacks |= (bitboard << 6);
 
   return attacks;
 }
@@ -57,14 +57,14 @@ BitBoard maskKingAttacks(int square) {
   final bitboard = BitBoard(0).setBit(square);
   var attacks = BitBoard(0);
 
-  if ((bitboard >> 8).notEmpty()) attacks |= (bitboard >> 8);
-  if (((bitboard >> 9) & NOT_H_FILE).notEmpty()) attacks |= (bitboard >> 9);
-  if (((bitboard >> 7) & NOT_A_FILE).notEmpty()) attacks |= (bitboard >> 7);
-  if (((bitboard >> 1) & NOT_H_FILE).notEmpty()) attacks |= (bitboard >> 1);
-  if ((bitboard << 8).notEmpty()) attacks |= (bitboard << 8);
-  if (((bitboard << 9) & NOT_A_FILE).notEmpty()) attacks |= (bitboard << 9);
-  if (((bitboard << 7) & NOT_H_FILE).notEmpty()) attacks |= (bitboard << 7);
-  if (((bitboard << 1) & NOT_A_FILE).notEmpty()) attacks |= (bitboard << 1);
+  if ((bitboard >> 8).notEmpty) attacks |= (bitboard >> 8);
+  if (((bitboard >> 9) & NOT_H_FILE).notEmpty) attacks |= (bitboard >> 9);
+  if (((bitboard >> 7) & NOT_A_FILE).notEmpty) attacks |= (bitboard >> 7);
+  if (((bitboard >> 1) & NOT_H_FILE).notEmpty) attacks |= (bitboard >> 1);
+  if ((bitboard << 8).notEmpty) attacks |= (bitboard << 8);
+  if (((bitboard << 9) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 9);
+  if (((bitboard << 7) & NOT_H_FILE).notEmpty) attacks |= (bitboard << 7);
+  if (((bitboard << 1) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 1);
 
   return attacks;
 }
@@ -280,14 +280,14 @@ extension AttackGeneration on Board {
     // attacked by white pawns
     if ((side.isWhite) &&
         (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!)
-            .notEmpty()) {
+            .notEmpty) {
       return true;
     }
 
     // attacked by black pawns
     if ((side == Side.black) &&
         (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!)
-            .notEmpty()) {
+            .notEmpty) {
       return true;
     }
 
@@ -296,35 +296,35 @@ extension AttackGeneration on Board {
             ((isWhite)
                 ? pieceBitBoards[PieceType.wKnight]!
                 : pieceBitBoards[PieceType.bKnight]!))
-        .notEmpty()) return true;
+        .notEmpty) return true;
 
     // attacked by bishops
     if ((getBishopAttacks(square, allPieces) &
             ((isWhite)
                 ? pieceBitBoards[PieceType.wBishop]!
                 : pieceBitBoards[PieceType.bBishop]!))
-        .notEmpty()) return true;
+        .notEmpty) return true;
 
     // attacked by rooks
     if ((getRookAttacks(square, allPieces) &
             ((isWhite)
                 ? pieceBitBoards[PieceType.wRook]!
                 : pieceBitBoards[PieceType.bRook]!))
-        .notEmpty()) return true;
+        .notEmpty) return true;
 
     // attacked by bishops
     if ((getQueenAttacks(square, allPieces) &
             ((isWhite)
                 ? pieceBitBoards[PieceType.wQueen]!
                 : pieceBitBoards[PieceType.bQueen]!))
-        .notEmpty()) return true;
+        .notEmpty) return true;
 
     // attacked by kings
     if ((kingAttacks[square] &
             ((isWhite)
                 ? pieceBitBoards[PieceType.wKing]!
                 : pieceBitBoards[PieceType.bKing]!))
-        .notEmpty()) return true;
+        .notEmpty) return true;
 
     // by default return false
     return false;

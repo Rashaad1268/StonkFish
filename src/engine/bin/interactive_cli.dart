@@ -3,34 +3,21 @@ import 'dart:io';
 import 'package:engine/engine.dart';
 
 void interactiveCliMatch(Board board) {
+  board.printBoard();
   print('\nEnter Move >>>');
 
   while (true) {
-    final move = stdin.readLineSync()?.trim();
+    final move = UCIParser.parseMove(board, stdin.readLineSync()?.trim() ?? '');
 
-    if (move == null || move.length < 4) {
+    if (move == null) {
       print("Invalid move bruh");
       continue;
     }
 
-    final from = squareFromAlgebraic(move.substring(0, 2));
-    final to = squareFromAlgebraic(move.substring(2, 4));
-
-    Move? moveToMake;
-
     try {
-      moveToMake = board
-          .generateLegalMoves()
-          .firstWhere((m) => m.from == from && m.to == to);
-    } catch (error) {
-      if (error is StateError) {
-        print("\nInvalid move bruh\nThe correct format is {from}{to}\n");
-        continue;
-      }
-    }
-
-    try {
-      board.makeMove(moveToMake!);
+      board.makeMove(move);
+      board.negamax(alpha: -50000, beta: 50000, depth: 4);
+      board.makeMove(Eval.bestMove!);
     } catch (error) {
       if (error is ArgumentError) {
         print(error.message);

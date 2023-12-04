@@ -1,11 +1,11 @@
 import 'package:engine/engine.dart';
 
 extension MoveMaker on Board {
-  void makeMove(Move move, {bool validate = true}) {
+  void makeMove(Move move, {bool validateSide = true}) {
     assert((move.from < 64) && (move.from >= 0));
     assert((move.to < 64) && (move.to >= 0));
 
-    if (validate) {
+    if (validateSide) {
       if (turn != move.piece.side) {
         throw ArgumentError("You can't move the pieces of the other side");
       }
@@ -24,8 +24,11 @@ extension MoveMaker on Board {
     handleEnPassant(board: this, move: move);
     handlePawnPromotion(board: this, move: move);
 
-    if (validate) {
+    if (validateSide) {
       movesPlayed.add(move);
+
+      halfMoveClock =
+          (move.isCapture || move.piece.isPawn) ? 0 : halfMoveClock + 1;
     }
 
     turn = turn.opposite();
@@ -166,7 +169,8 @@ void handleCastling({required Board board, required Move move}) {
 }
 
 void handleEnPassant({required Board board, required Move move}) {
-  // Make sure the move was played by the player instead of the generateLegalMoves() function
+  board.halfMoveClock = 0;
+
   if (move.isDoublePush) {
     board.enPassant = (move.piece.side.isWhite) ? move.to + 8 : move.to - 8;
   }

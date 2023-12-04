@@ -2,11 +2,22 @@ import 'package:test/test.dart';
 import 'package:engine/engine.dart';
 
 void main() {
+  test('Test Board.fromFen', () {
+    final board = Board.fromFen(
+        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+    expect(board.whitePieces, equals(Board.startingPosition.whitePieces));
+    expect(board.blackPieces, equals(Board.startingPosition.blackPieces));
+
+    expect(board.halfMoveClock, 0);
+    expect(board.fullMoveNumber, 1);
+  });
+
   test('Test Board.toFen()', () {
     final board = Board.startingPosition;
 
     expect(board.toFen(),
-        equals('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -'));
+        equals('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'));
   });
 
   test('Test Bord.makeMove()', () {

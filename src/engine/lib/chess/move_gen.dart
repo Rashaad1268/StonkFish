@@ -21,7 +21,7 @@ extension MoveGeneration on Board {
         // gen white pawn moves and white castling moves here
         if (piece == PieceType.wPawn) {
           // loop over white pawns within white pawn bitboard
-          while (bitboard.notEmpty()) {
+          while (bitboard.notEmpty) {
             // init source square
             sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -85,7 +85,7 @@ extension MoveGeneration on Board {
                 blackPieces;
 
             // generate pawn captures
-            while (attacks.notEmpty()) {
+            while (attacks.notEmpty) {
               // init target square
               targetSquare = getLs1bIndex(attacks.value);
 
@@ -202,7 +202,7 @@ extension MoveGeneration on Board {
         // pick up black pawn bitboards index
         if (piece == PieceType.bPawn) {
           // loop over white pawns within white pawn bitboard
-          while (bitboard.notEmpty()) {
+          while (bitboard.notEmpty) {
             // init source square
             sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -277,7 +277,7 @@ extension MoveGeneration on Board {
                 whitePieces;
 
             // generate pawn captures
-            while (attacks.notEmpty()) {
+            while (attacks.notEmpty) {
               // init target square
               targetSquare = getLs1bIndex(attacks.value);
 
@@ -328,7 +328,7 @@ extension MoveGeneration on Board {
                       BitBoard(1 << enPassant!);
 
               // make sure enpassant capture available
-              if (enpassantAttacks.notEmpty()) {
+              if (enpassantAttacks.notEmpty) {
                 // init enpassant capture target square
                 int targetEnpassant = getLs1bIndex(enpassantAttacks.value);
                 moves.add(Move(
@@ -391,7 +391,7 @@ extension MoveGeneration on Board {
       // gen moves of rest of the pieces
       if (piece.isKnight) {
         // loop over source squares of piece bitboard copy
-        while (bitboard.notEmpty()) {
+        while (bitboard.notEmpty) {
           // init source square
           sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -399,7 +399,7 @@ extension MoveGeneration on Board {
           var attacks = knightAttacks[sourceSquare] & ~piecesOf(piece.side);
 
           // loop over target squares available from generated attacks
-          while (attacks.notEmpty()) {
+          while (attacks.notEmpty) {
             // init target square
             targetSquare = getLs1bIndex(attacks.value);
 
@@ -433,7 +433,7 @@ extension MoveGeneration on Board {
         }
       } else if (piece.isBishop) {
         // loop over source squares of piece bitboard copy
-        while (bitboard.notEmpty()) {
+        while (bitboard.notEmpty) {
           // init source square
           sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -442,7 +442,7 @@ extension MoveGeneration on Board {
               getBishopAttacks(sourceSquare, allPieces) & ~piecesOf(piece.side);
 
           // loop over target squares available from generated attacks
-          while (attacks.notEmpty()) {
+          while (attacks.notEmpty) {
             // init target square
             targetSquare = getLs1bIndex(attacks.value);
 
@@ -478,7 +478,7 @@ extension MoveGeneration on Board {
         }
       } else if (piece.isRook) {
         // loop over source squares of piece bitboard copy
-        while (bitboard.notEmpty()) {
+        while (bitboard.notEmpty) {
           // init source square
           sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -487,7 +487,7 @@ extension MoveGeneration on Board {
               getRookAttacks(sourceSquare, allPieces) & ~piecesOf(piece.side);
 
           // loop over target squares available from generated attacks
-          while (attacks.notEmpty()) {
+          while (attacks.notEmpty) {
             // init target square
             targetSquare = getLs1bIndex(attacks.value);
 
@@ -521,7 +521,7 @@ extension MoveGeneration on Board {
         }
       } else if (piece.isQueen) {
         // loop over source squares of piece bitboard copy
-        while (bitboard.notEmpty()) {
+        while (bitboard.notEmpty) {
           // init source square
           sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -530,7 +530,7 @@ extension MoveGeneration on Board {
               getQueenAttacks(sourceSquare, allPieces) & ~piecesOf(piece.side);
 
           // loop over target squares available from generated attacks
-          while (attacks.notEmpty()) {
+          while (attacks.notEmpty) {
             // init target square
             targetSquare = getLs1bIndex(attacks.value);
 
@@ -564,7 +564,7 @@ extension MoveGeneration on Board {
         }
       } else if (piece.isKing) {
         // loop over source squares of piece bitboard copy
-        while (bitboard.notEmpty()) {
+        while (bitboard.notEmpty) {
           // init source square
           sourceSquare = getLs1bIndex(bitboard.value);
 
@@ -572,7 +572,7 @@ extension MoveGeneration on Board {
           var attacks = kingAttacks[sourceSquare] & ~piecesOf(piece.side);
 
           // loop over target squares available from generated attacks
-          while (attacks.notEmpty()) {
+          while (attacks.notEmpty) {
             // init target square
             targetSquare = getLs1bIndex(attacks.value);
 
@@ -622,7 +622,7 @@ extension MoveGeneration on Board {
         getLs1bIndex(pieceBitBoards[PieceType.bKing]!.value), Side.white);
 
     for (final move in (pseudoLegalMoves ?? generatePseudoLegalMoves())) {
-      makeMove(move, validate: false);
+      makeMove(move, validateSide: false);
 
       if (!(currentTurn.isWhite ? whiteIsChecked() : blackIsChecked())) {
         // If the king is not in check, it is a legal move

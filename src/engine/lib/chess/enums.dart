@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:engine/engine.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 enum PieceType {
   wPawn(0),
@@ -66,7 +65,6 @@ HashMap<PieceType, String> asciiPieces = HashMap.from({
   PieceType.bPawn: "p",
 });
 
-
 HashMap<PieceType, String> unicodePieces = HashMap.from({
   PieceType.bPawn: "♙",
   PieceType.bKnight: "♘",
@@ -111,9 +109,9 @@ class Move {
         other.promotedPiece == promotedPiece;
   }
 
-@override
+  @override
   String toString() {
-    return "${squareToAlgebraic(from)} ${squareToAlgebraic(to)} ${promotedPiece!=null ? asciiPieces[promotedPiece!] : ''}";
+    return "${asciiPieces[piece]} ${squareToAlgebraic(from)} ${squareToAlgebraic(to)} ${promotedPiece != null ? asciiPieces[promotedPiece!] : ''}";
   }
 
   @override

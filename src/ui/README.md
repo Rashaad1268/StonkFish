@@ -1,8 +1,6 @@
-# StonkFish UI
+# ui
 
-The UI of the strongest dart chess engine (hopefully)
-
-----
+A new Flutter project.
 
 ## Getting Started
 

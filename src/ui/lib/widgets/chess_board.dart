@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:chessground/chessground.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:engine/engine.dart' as engine;
+import 'package:ui/pieces.dart';
 import '../utils.dart';
 
 class ChessBoard extends StatefulWidget {
@@ -34,7 +33,7 @@ class _ChessBoardState extends State<ChessBoard> {
         Text(errorMessage, style: TextStyle(color: Colors.red.shade500)),
         Board(
           size: boardSize,
-          settings: const BoardSettings(enablePremoves: false),
+          settings: const BoardSettings(pieceAssets: maestroPieceSet),
           data: BoardData(
             fen: board.toFen(),
             interactableSide: InteractableSide.both,
@@ -43,29 +42,28 @@ class _ChessBoardState extends State<ChessBoard> {
             isCheck: board.isCheck,
             sideToMove: board.turn.isWhite ? Side.white : Side.black,
             validMoves: getMoves(legalMoves),
-            onMove: (move, {isDrop, isPremove}) {
-              try {
-                setState(() {
-                  final moveToMake = legalMoves.firstWhere((m) =>
-                      engine.squareToAlgebraic(m.from) == move.from &&
-                      engine.squareToAlgebraic(m.to) == move.to &&
-                      getPromotedPiece(
-                              role: move.promotion, side: board.turn) ==
-                          m.promotedPiece);
-                  board.makeMove(moveToMake);
-
-                  board.searchPosition(4);
-                  board.makeMove(engine.Eval.bestMove!);
-                });
-              } catch (error) {
-                if (error is ArgumentError) {
-                  setState(() {
-                    errorMessage = error.message;
-                  });
-                }
-              }
-            },
           ),
+          onMove: (move, {isDrop, isPremove}) {
+            try {
+              setState(() {
+                final moveToMake = legalMoves.firstWhere((m) =>
+                    engine.squareToAlgebraic(m.from) == move.from &&
+                    engine.squareToAlgebraic(m.to) == move.to &&
+                    getPromotedPiece(role: move.promotion, side: board.turn) ==
+                        m.promotedPiece);
+                board.makeMove(moveToMake);
+
+                board.searchPosition(4);
+                board.makeMove(engine.Eval.bestMove!);
+              });
+            } catch (error) {
+              if (error is ArgumentError) {
+                setState(() {
+                  errorMessage = error.message;
+                });
+              }
+            }
+          },
         ),
       ],
     );

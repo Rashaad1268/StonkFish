@@ -68,67 +68,65 @@ extension Eval on Board {
     // recursion escape condition
     if (depth == 0) {
       // return evaluation
-        return evaluate();
+      return evaluate();
     }
-    
+
     // increment nodes count
     nodes++;
-    
+
     // best move so far
     Move? bestSoFar;
-    
-    // old value of alpha
-    int old_alpha = alpha;
-    
-        
-    // loop over moves within a movelist
-    for (final move in generateLegalMoves())
-    {
-        // preserve board state
-        final boardCopy = toCopy();
-        
-        // increment ply
-        ply++;
-        
-        // score current move
-        int score = -negamax(alpha: -beta, beta: -alpha, depth: depth - 1);
-        
-        // decrement ply
-        ply--;
 
-        // take move back
-        revertTo(boardCopy);
-        
-        // fail-hard beta cutoff
-        if (score >= beta)
-        {
-            // node (move) fails high
-            return beta;
+    // old value of alpha
+    int oldAlpha = alpha;
+
+    // loop over moves within a movelist
+    for (final move in generateLegalMoves()) {
+      // preserve board state
+      final boardCopy = toCopy();
+
+      // increment ply
+      ply++;
+
+      // score current move
+      int score = -negamax(alpha: -beta, beta: -alpha, depth: depth - 1);
+
+      // decrement ply
+      ply--;
+
+      // take move back
+      revertTo(boardCopy);
+
+      // fail-hard beta cutoff
+      if (score >= beta) {
+        // node (move) fails high
+        return beta;
+      }
+
+      // found a better move
+      if (score > alpha) {
+        // PV node (move)
+        alpha = score;
+
+        // if root move
+        if (ply == 0) {
+          // associate best move with the best score
+          bestSoFar = move;
         }
-        
-        // found a better move
-        if (score > alpha)
-        {
-            // PV node (move)
-            alpha = score;
-            
-            // if root move
-            if (ply == 0) {
-              // associate best move with the best score
-                bestSoFar = move;
-            }
-        }
+      }
     }
-    
+
     // found better move
-    if (old_alpha != alpha) {
+    if (oldAlpha != alpha) {
       // init best move
-        bestMove = bestSoFar;
+      bestMove = bestSoFar;
+    } else {
+      bestMove = null;
     }
-    
+
     // node (move) fails low
     return alpha;
-}
+  }
 
   void searchPosition(int depth) {
     // find best move within a given position
@@ -136,8 +134,7 @@ extension Eval on Board {
 
     // best move placeholder
     print("bestmove $bestMove");
-    print(
-        bestMove.toString());
+    print(bestMove.toString());
     print("\n");
   }
 }

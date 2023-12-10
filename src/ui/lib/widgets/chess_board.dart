@@ -54,7 +54,9 @@ class _ChessBoardState extends State<ChessBoard> {
                 board.makeMove(moveToMake);
 
                 board.searchPosition(4);
-                board.makeMove(engine.Eval.bestMove!);
+                if (engine.Eval.bestMove != null) {
+                  board.makeMove(engine.Eval.bestMove!);
+                }
               });
             } catch (error) {
               if (error is ArgumentError) {

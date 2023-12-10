@@ -3,10 +3,12 @@ import 'package:engine/engine.dart';
 import 'package:nyxx/nyxx.dart';
 
 var board = Board.startingPosition;
-var useUnicodeCharacters = false;
-var fillEmptySquares = false;
+var useUnicodeCharacters = true;
+var fillEmptySquares = true;
 
 void main() {
+  initAttacks();
+
   final bot = NyxxFactory.createNyxxWebsocket(
       token, GatewayIntents.allUnprivileged | GatewayIntents.messageContent)
     ..registerPlugin(Logging()) // Default logging plugin
@@ -23,16 +25,21 @@ void main() {
       await event.message.channel.sendMessage(MessageBuilder.content(
           "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!move")) {
-      final move = content.split(" ")[1];
+      final move = UCIParser.parseMove(board, content.split(" ")[1]);
 
-      if (move == "" || move.length != 4) {
+      if (move == null) {
         await event.message.channel
             .sendMessage(MessageBuilder.content("Invalid move bruh"));
         return;
       }
 
       try {
-        // board.makeMove(move);
+        board.makeMove(move);
+        board.searchPosition(4);
+
+        if (board.generateLegalMoves().isNotEmpty && Eval.bestMove != null) {
+          board.makeMove(Eval.bestMove!);
+        }
       } catch (error) {
         if (error is ArgumentError) {
           await event.message.channel
@@ -44,8 +51,16 @@ void main() {
           "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!unicode")) {
       useUnicodeCharacters = !useUnicodeCharacters;
+
+      await event.message.channel.sendMessage(MessageBuilder.content(
+          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!fillempty")) {
       fillEmptySquares = !fillEmptySquares;
+
+      await event.message.channel.sendMessage(MessageBuilder.content(
+          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
+    } else if (content.startsWith("!reset")) {
+      board = Board.startingPosition;
     }
   });
 }

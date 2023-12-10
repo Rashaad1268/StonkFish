@@ -132,14 +132,13 @@ class Engine {
 
     if (legalMoves.isEmpty) {
       // king is in check
-      if (inCheck)
+      if (inCheck) {
         // return mating score (assuming closest distance to mating position)
         return -49000 + ply;
-
-      // king is not in check
-      else
+      } else {
         // return stalemate score
         return 0;
+      }
     }
 
     // found better move

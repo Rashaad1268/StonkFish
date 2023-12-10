@@ -5,23 +5,23 @@ void main() {
   test('Test maskPawnAttacks()', () {
     // Test if the masking works for white
     expect(maskPawnAttacks(Squares.a7, side: Side.white),
-        equals(BitBoard(0).setBit(Squares.b8)));
+        equals(BitBoard(0).setBit(Squares.b8).value));
 
     expect(maskPawnAttacks(Squares.h7, side: Side.white),
-        equals(BitBoard(0).setBit(Squares.g8)));
+        equals(BitBoard(0).setBit(Squares.g8).value));
 
     expect(maskPawnAttacks(Squares.b7, side: Side.white),
-        equals(BitBoard(0).setBit(Squares.a8).setBit(Squares.c8)));
+        equals(BitBoard(0).setBit(Squares.a8).setBit(Squares.c8).value));
 
     // Test if the masking works for black
     expect(maskPawnAttacks(Squares.a2, side: Side.black),
-        equals(BitBoard(0).setBit(Squares.b1)));
+        equals(BitBoard(0).setBit(Squares.b1).value));
 
     expect(maskPawnAttacks(Squares.h2, side: Side.black),
-        equals(BitBoard(0).setBit(Squares.g1)));
+        equals(BitBoard(0).setBit(Squares.g1).value));
 
     expect(maskPawnAttacks(Squares.b2, side: Side.black),
-        equals(BitBoard(0).setBit(Squares.a1).setBit(Squares.c1)));
+        equals(BitBoard(0).setBit(Squares.a1).setBit(Squares.c1).value));
   });
 
   test('Test maskKnightAttacks()', () {
@@ -35,13 +35,13 @@ void main() {
             .setBit(Squares.g3)
             .setBit(Squares.g5)
             .setBit(Squares.c3)
-            .setBit(Squares.c5)));
+            .setBit(Squares.c5).value));
 
     expect(maskKnightAttacks(Squares.a1),
-        equals(BitBoard(0).setBit(Squares.b3).setBit(Squares.c2)));
+        equals(BitBoard(0).setBit(Squares.b3).setBit(Squares.c2).value));
 
     expect(maskKnightAttacks(Squares.h1),
-        equals(BitBoard(0).setBit(Squares.f2).setBit(Squares.g3)));
+        equals(BitBoard(0).setBit(Squares.f2).setBit(Squares.g3).value));
 
     expect(
         maskKnightAttacks(Squares.a4),
@@ -49,7 +49,7 @@ void main() {
             .setBit(Squares.b6)
             .setBit(Squares.b2)
             .setBit(Squares.c5)
-            .setBit(Squares.c3)));
+            .setBit(Squares.c3).value));
   });
 
   test('Test maskKingAttacks()', () {
@@ -63,20 +63,20 @@ void main() {
             .setBit(Squares.e4)
             .setBit(Squares.c3)
             .setBit(Squares.d3)
-            .setBit(Squares.e3)));
+            .setBit(Squares.e3).value));
     expect(
         maskKingAttacks(Squares.a1),
         equals(BitBoard(0)
             .setBit(Squares.a2)
             .setBit(Squares.b2)
-            .setBit(Squares.b1)));
+            .setBit(Squares.b1).value));
 
     expect(
         maskKingAttacks(Squares.h8),
         equals(BitBoard(0)
             .setBit(Squares.g8)
             .setBit(Squares.g7)
-            .setBit(Squares.h7)));
+            .setBit(Squares.h7).value));
 
     expect(
         maskKingAttacks(Squares.d1),
@@ -85,6 +85,6 @@ void main() {
             .setBit(Squares.e1)
             .setBit(Squares.c2)
             .setBit(Squares.d2)
-            .setBit(Squares.e2)));
+            .setBit(Squares.e2).value));
   });
 }

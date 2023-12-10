@@ -179,7 +179,7 @@ int findMagicNumber(int square, int relevantBits, bool isBishop) {
   Map<int, int> usedAttacks = {};
   int i, j, n;
 
-  final mask = isBishop ? maskBishopAttacks(square) : maskRookAttacks(square);
+  final mask = BitBoard(isBishop ? maskBishopAttacks(square) : maskRookAttacks(square));
   n = countBits(mask.value);
 
   for (i = 0; i < (1 << n); i++) {
@@ -187,7 +187,7 @@ int findMagicNumber(int square, int relevantBits, bool isBishop) {
     attacks[i] = (isBishop
             ? genBishopAttacksOnTheFly(square, occupancies[i]!)
             : genRookAttacksOnTheFly(square, occupancies[i]!))
-        .value;
+        ;
   }
 
   for (var k = 0; k < 100000000; k++) {

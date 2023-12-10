@@ -2,25 +2,22 @@ import 'dart:collection';
 
 import 'package:engine/engine.dart';
 
-final List<List<BitBoard>> pawnAttacks = [
-  List.generate(64, (_) => BitBoard(0)), // White pawns
-  List.generate(64, (_) => BitBoard(0)) // Black pawns
+final List<List<int>> pawnAttacks = [
+  List.filled(64, 0), // White pawns
+  List.filled(64, 0) // Black pawns
 ];
-/* Only use List.filled with mutable objects,
-   BitBoard is not mutable but we don't use List.filled to hopefully avoid any bugs in the future
-*/
-List<BitBoard> kingAttacks = List.generate(64, (_) => BitBoard(0));
-List<BitBoard> knightAttacks = List.generate(64, (_) => BitBoard(0));
-List<BitBoard> bishopMasks = List.generate(64, (_) => BitBoard(0));
-List<BitBoard> rookMasks = List.generate(64, (_) => BitBoard(0));
+
+List<int> kingAttacks = List.filled(64, 0);
+List<int> knightAttacks = List.filled(64, 0);
+List<int> bishopMasks = List.filled(64, 0);
+List<int> rookMasks = List.filled(64, 0);
 
 /* Use List.generate especially for mutable objects such as Maps
    because the same instance is shared by every element of the list */
-List<HashMap<int, BitBoard>> bishopAttacks =
-    List.generate(64, (_) => HashMap());
-List<HashMap<int, BitBoard>> rookAttacks = List.generate(64, (_) => HashMap());
+List<HashMap<int, int>> bishopAttacks = List.generate(64, (_) => HashMap());
+List<HashMap<int, int>> rookAttacks = List.generate(64, (_) => HashMap());
 
-BitBoard maskPawnAttacks(int square, {required Side side}) {
+int maskPawnAttacks(int square, {required Side side}) {
   final bitboard = BitBoard(0).setBit(square);
   var attacks = BitBoard(0);
 
@@ -34,10 +31,10 @@ BitBoard maskPawnAttacks(int square, {required Side side}) {
     if (((bitboard << 9) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 9);
   }
 
-  return attacks;
+  return attacks.value;
 }
 
-BitBoard maskKnightAttacks(int square) {
+int maskKnightAttacks(int square) {
   final bitboard = BitBoard(0).setBit(square);
   var attacks = BitBoard(0);
 
@@ -50,10 +47,10 @@ BitBoard maskKnightAttacks(int square) {
   if (((bitboard << 10) & NOT_AB_FILE).notEmpty) attacks |= (bitboard << 10);
   if (((bitboard << 6) & NOT_HG_FILE).notEmpty) attacks |= (bitboard << 6);
 
-  return attacks;
+  return attacks.value;
 }
 
-BitBoard maskKingAttacks(int square) {
+int maskKingAttacks(int square) {
   final bitboard = BitBoard(0).setBit(square);
   var attacks = BitBoard(0);
 
@@ -66,11 +63,11 @@ BitBoard maskKingAttacks(int square) {
   if (((bitboard << 7) & NOT_H_FILE).notEmpty) attacks |= (bitboard << 7);
   if (((bitboard << 1) & NOT_A_FILE).notEmpty) attacks |= (bitboard << 1);
 
-  return attacks;
+  return attacks.value;
 }
 
-BitBoard maskBishopAttacks(int square) {
-  var attacks = BitBoard(0);
+int maskBishopAttacks(int square) {
+  var attacks = 0;
 
   var tr = (square / 8).floor();
   var tf = square % 8;
@@ -78,26 +75,26 @@ BitBoard maskBishopAttacks(int square) {
   // mask relevant bishop occupancy bits
   // TODO: Maybe combine all of these loops into a single loop? (skill issue)
   for (var r = tr + 1, f = tf + 1; r <= 6 && f <= 6; r++, f++) {
-    attacks |= BitBoard(1 << (r * 8 + f));
+    attacks |= 1 << (r * 8 + f);
   }
 
   for (var r = tr - 1, f = tf + 1; r >= 1 && f <= 6; r--, f++) {
-    attacks |= BitBoard(1 << (r * 8 + f));
+    attacks |= 1 << (r * 8 + f);
   }
 
   for (var r = tr + 1, f = tf - 1; r <= 6 && f >= 1; r++, f--) {
-    attacks |= BitBoard(1 << (r * 8 + f));
+    attacks |= 1 << (r * 8 + f);
   }
 
   for (var r = tr - 1, f = tf - 1; r >= 1 && f >= 1; r--, f--) {
-    attacks |= BitBoard(1 << (r * 8 + f));
+    attacks |= 1 << (r * 8 + f);
   }
 
   // return attack map
   return attacks;
 }
 
-BitBoard maskRookAttacks(int square) {
+int maskRookAttacks(int square) {
   // result attacks bitboard
   var attacks = BitBoard(0);
 
@@ -120,10 +117,10 @@ BitBoard maskRookAttacks(int square) {
     attacks |= BitBoard(1 << (tr * 8 + f));
   }
 
-  return attacks;
+  return attacks.value;
 }
 
-BitBoard genBishopAttacksOnTheFly(int square, int blockers) {
+int genBishopAttacksOnTheFly(int square, int blockers) {
   // result attacks bitboard
   var attacks = BitBoard(0);
 
@@ -153,10 +150,10 @@ BitBoard genBishopAttacksOnTheFly(int square, int blockers) {
   }
 
   // return attack map
-  return attacks;
+  return attacks.value;
 }
 
-BitBoard genRookAttacksOnTheFly(int square, int blockers) {
+int genRookAttacksOnTheFly(int square, int blockers) {
   var attacks = BitBoard(0);
 
   // init target rank & files
@@ -185,7 +182,7 @@ BitBoard genRookAttacksOnTheFly(int square, int blockers) {
   }
 
   // return attack map
-  return attacks;
+  return attacks.value;
 }
 
 void initSliderAttacks(bool isBishop) {
@@ -195,7 +192,8 @@ void initSliderAttacks(bool isBishop) {
     rookMasks[square] = maskRookAttacks(square);
 
     // Get current attack mask
-    final attackMask = isBishop ? bishopMasks[square] : rookMasks[square];
+    final attackMask =
+        BitBoard(isBishop ? bishopMasks[square] : rookMasks[square]);
 
     int relevantBitsCount = countBits(attackMask.value);
     int occupancyIndicies = (1 << relevantBitsCount);
@@ -235,21 +233,21 @@ void initSliderAttacks(bool isBishop) {
 BitBoard getBishopAttacks(int square, BitBoard occupancy) {
   // get bishop attacks assuming current board occupancy
   var occ = occupancy.value;
-  occ &= bishopMasks[square].value;
+  occ &= bishopMasks[square];
   occ *= bishopMagicNumbers[square];
   occ >>= 64 - bishopRelevantBits[square];
 
-  return bishopAttacks[square][occ]!;
+  return BitBoard(bishopAttacks[square][occ]!);
 }
 
 BitBoard getRookAttacks(int square, BitBoard occupancy) {
   // get rook attacks assuming current board occupancy
   var occ = occupancy.value;
-  occ &= rookMasks[square].value;
+  occ &= rookMasks[square];
   occ *= rookMagicNumbers[square];
   occ >>= 64 - rookRelevantBits[square];
 
-  return rookAttacks[square][occ]!;
+  return BitBoard(rookAttacks[square][occ]!);
 }
 
 BitBoard getQueenAttacks(int square, BitBoard occupancy) {
@@ -279,24 +277,24 @@ extension AttackGeneration on Board {
 
     // attacked by white pawns
     if ((side.isWhite) &&
-        (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!)
-            .notEmpty) {
+        (pawnAttacks[1][square] & pieceBitBoards[PieceType.wPawn]!.value) !=
+            0) {
       return true;
     }
 
     // attacked by black pawns
     if ((side == Side.black) &&
-        (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!)
-            .notEmpty) {
+        (pawnAttacks[0][square] & pieceBitBoards[PieceType.bPawn]!.value) !=
+            0) {
       return true;
     }
 
     // attacked by knights
     if ((knightAttacks[square] &
             ((isWhite)
-                ? pieceBitBoards[PieceType.wKnight]!
-                : pieceBitBoards[PieceType.bKnight]!))
-        .notEmpty) return true;
+                ? pieceBitBoards[PieceType.wKnight]!.value
+                : pieceBitBoards[PieceType.bKnight]!.value)) !=
+        0) return true;
 
     // attacked by bishops
     if ((getBishopAttacks(square, allPieces) &
@@ -322,9 +320,9 @@ extension AttackGeneration on Board {
     // attacked by kings
     if ((kingAttacks[square] &
             ((isWhite)
-                ? pieceBitBoards[PieceType.wKing]!
-                : pieceBitBoards[PieceType.bKing]!))
-        .notEmpty) return true;
+                ? pieceBitBoards[PieceType.wKing]!.value
+                : pieceBitBoards[PieceType.bKing]!.value))
+        != 0) return true;
 
     // by default return false
     return false;

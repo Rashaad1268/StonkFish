@@ -80,9 +80,8 @@ extension MoveGeneration on Board {
             }
 
             // init pawn attacks bitboard
-            var attacks = pawnAttacks[piece.side == Side.white ? 0 : 1]
-                    [sourceSquare] &
-                blackPieces;
+            var attacks = BitBoard(pawnAttacks[piece.side == Side.white ? 0 : 1]
+                    [sourceSquare] & blackPieces.value);
 
             // generate pawn captures
             while (attacks.notEmpty) {
@@ -132,7 +131,7 @@ extension MoveGeneration on Board {
             if (enPassant != null) {
               // lookup pawn attacks and bitwise AND with enpassant square (bit)
               final enpassantAttacks =
-                  pawnAttacks[piece.side.isWhite ? 0 : 1][sourceSquare].value &
+                  pawnAttacks[piece.side.isWhite ? 0 : 1][sourceSquare] &
                       (1 << enPassant!);
 
               // make sure enpassant capture available
@@ -272,9 +271,9 @@ extension MoveGeneration on Board {
             }
 
             // init pawn attacks bitboard
-            var attacks = pawnAttacks[piece.side == Side.white ? 0 : 1]
+            var attacks = BitBoard(pawnAttacks[piece.side == Side.white ? 0 : 1]
                     [sourceSquare] &
-                whitePieces;
+                whitePieces.value);
 
             // generate pawn captures
             while (attacks.notEmpty) {
@@ -325,12 +324,12 @@ extension MoveGeneration on Board {
               // lookup pawn attacks and bitwise AND with enpassant square (bit)
               final enpassantAttacks =
                   pawnAttacks[piece.side == Side.white ? 0 : 1][sourceSquare] &
-                      BitBoard(1 << enPassant!);
+                      (1 << enPassant!);
 
               // make sure enpassant capture available
-              if (enpassantAttacks.notEmpty) {
+              if (enpassantAttacks != 0) {
                 // init enpassant capture target square
-                int targetEnpassant = getLs1bIndex(enpassantAttacks.value);
+                int targetEnpassant = getLs1bIndex(enpassantAttacks);
                 moves.add(Move(
                     piece: piece,
                     from: sourceSquare,
@@ -396,7 +395,7 @@ extension MoveGeneration on Board {
           sourceSquare = getLs1bIndex(bitboard.value);
 
           // init piece attacks in order to get set of target squares
-          var attacks = knightAttacks[sourceSquare] & ~piecesOf(piece.side);
+          var attacks = BitBoard(knightAttacks[sourceSquare] & ~piecesOf(piece.side).value);
 
           // loop over target squares available from generated attacks
           while (attacks.notEmpty) {
@@ -569,7 +568,7 @@ extension MoveGeneration on Board {
           sourceSquare = getLs1bIndex(bitboard.value);
 
           // init piece attacks in order to get set of target squares
-          var attacks = kingAttacks[sourceSquare] & ~piecesOf(piece.side);
+          var attacks = BitBoard(kingAttacks[sourceSquare] & ~piecesOf(piece.side).value);
 
           // loop over target squares available from generated attacks
           while (attacks.notEmpty) {

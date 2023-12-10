@@ -23,7 +23,7 @@ void main() {
     final content = event.message.content.toLowerCase();
     if (content.startsWith("!board")) {
       await event.message.channel.sendMessage(MessageBuilder.content(
-          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
+          "```${board.formatBoard(side: Side.white, useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!move")) {
       final move = UCIParser.parseMove(board, content.split(" ")[1]);
 
@@ -48,17 +48,17 @@ void main() {
       }
 
       await event.message.channel.sendMessage(MessageBuilder.content(
-          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
+          "```${board.formatBoard(side: Side.white, useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!unicode")) {
       useUnicodeCharacters = !useUnicodeCharacters;
 
       await event.message.channel.sendMessage(MessageBuilder.content(
-          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
+          "```${board.formatBoard(side: Side.white, useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!fillempty")) {
       fillEmptySquares = !fillEmptySquares;
 
       await event.message.channel.sendMessage(MessageBuilder.content(
-          "```${board.formatBoard(useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
+          "```${board.formatBoard(side: Side.white, useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!reset")) {
       board = Board.startingPosition;
     }

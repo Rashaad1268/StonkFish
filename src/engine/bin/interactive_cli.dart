@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:engine/engine.dart';
 
 void interactiveCliMatch(Board board) {
+  final engine = Engine(board);
   board.printBoard();
   print('\nEnter Move >>>');
 
@@ -16,8 +17,8 @@ void interactiveCliMatch(Board board) {
 
     try {
       board.makeMove(move);
-      board.negamax(alpha: -50000, beta: 50000, depth: 4);
-      board.makeMove(Eval.bestMove!);
+      engine.negamax(alpha: -50000, beta: 50000, depth: 4);
+      board.makeMove(engine.bestMove!);
     } catch (error) {
       if (error is ArgumentError) {
         print(error.message);

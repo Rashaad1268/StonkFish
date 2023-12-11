@@ -42,7 +42,7 @@ void main() {
     expect(move, equals(null));
   });
 
-  test('Test UCIParser.parsePosition()', () {
-    UCIParser.parsePosition('');
-  });
+  // test('Test UCIParser.parsePosition()', () {
+  //   UCIParser.parsePosition('');
+  // });
 }

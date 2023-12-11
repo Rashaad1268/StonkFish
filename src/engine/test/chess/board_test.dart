@@ -2,26 +2,33 @@ import 'package:test/test.dart';
 import 'package:engine/engine.dart';
 
 void main() {
+  // initAttacks();
+
   test('Test Board.fromFen', () {
     final board = Board.fromFen(
         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 
-    expect(board.whitePieces, equals(Board.startingPosition.whitePieces));
-    expect(board.blackPieces, equals(Board.startingPosition.blackPieces));
+    expect(board.whitePieces, equals(Board.startingPosition().whitePieces));
+    expect(board.blackPieces, equals(Board.startingPosition().blackPieces));
 
     expect(board.halfMoveClock, 0);
-    expect(board.fullMoveNumber, 1);
+    expect(board.movesPlayed, 1);
   });
 
   test('Test Board.toFen()', () {
-    final board = Board.startingPosition;
+    final board = Board.startingPosition();
 
     expect(board.toFen(),
         equals('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'));
+
+    expect(
+        Board.fromFen('6k1/2br1p1p/6p1/2B4B/p1b5/2N5/r4PPP/4R1K w - - 0 1')
+            .toFen(),
+        equals('6k1/2br1p1p/6p1/2B4B/p1b5/2N5/r4PPP/4R1K w - - 0 1'));
   });
 
-  test('Test Bord.makeMove()', () {
-    final board = Board.startingPosition;
+  test('Test Board.makeMove()', () {
+    final board = Board.startingPosition();
 
     board.makeMove(Move(
         from: Squares.d2,

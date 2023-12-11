@@ -10,7 +10,7 @@ class Board {
   int castlingRights;
   int? enPassant;
   int halfMoveClock;
-  final movesPlayed = <Move?>[];
+  int movesPlayed = 1;
 
   HashMap<PieceType, BitBoard> pieceBitBoards = HashMap();
 
@@ -46,7 +46,7 @@ class Board {
     pieceBitBoards[PieceType.bPawn] = blackPawns;
   }
 
-  static final startingPosition = Board(
+  static Board startingPosition() => Board(
       castlingRights: CastlingRights.wKingSide |
           CastlingRights.wQueenSide |
           CastlingRights.bKingSide |
@@ -67,7 +67,7 @@ class Board {
       blackKnights: BitBoard(66, pieceType: PieceType.bKnight),
       blackPawns: BitBoard(65280, pieceType: PieceType.bPawn));
 
-  static final empty = Board(
+  static Board empty() => Board(
       castlingRights: 0,
       halfMoveClock: 0,
       turn: Side.white,
@@ -108,8 +108,6 @@ class Board {
           ? pieceBitBoards[PieceType.wKing]!.value
           : pieceBitBoards[PieceType.bKing]!.value),
       turn.opposite());
-
-  int get fullMoveNumber => (movesPlayed.length / 2 + 1).floor();
 
   BitBoard piecesOf(Side side) {
     return side == Side.white ? whitePieces : blackPieces;
@@ -214,13 +212,13 @@ class Board {
     }
 
     fen += "$halfMoveClock ";
-    fen += "$fullMoveNumber";
+    fen += "$movesPlayed";
 
     return fen;
   }
 
   static Board fromFen(String fen) {
-    var board = Board.empty;
+    var board = Board.empty();
     int square = 0;
 
     // ignore: no_leading_underscores_for_local_identifiers
@@ -261,11 +259,7 @@ class Board {
 
     board.halfMoveClock = halfMoveClock ?? 0;
 
-    if (fullMoveNumber != null && fullMoveNumber > 0) {
-      for (var i = 0; i < (fullMoveNumber*2 - (board.turn.isWhite ? 2 : 1)); i++) {
-        board.movesPlayed.add(null);
-      }
-    }
+    board.movesPlayed = fullMoveNumber ?? 1;
 
     return board;
   }

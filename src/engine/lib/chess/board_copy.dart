@@ -24,7 +24,7 @@ extension BoardState on Board {
         turn: turn,
         castlingRights: castlingRights,
         enPassant: enPassant,
-        numOfMovesPlayed: movesPlayed.length);
+        numOfMovesPlayed: movesPlayed);
   }
 
   void revertTo(BoardCopy copy) {
@@ -32,8 +32,5 @@ extension BoardState on Board {
     turn = copy.turn;
     castlingRights = copy.castlingRights;
     enPassant = copy.enPassant;
-
-    // Remove all of the moves played after taking the copy
-    movesPlayed.removeRange(copy.numOfMovesPlayed, movesPlayed.length);
   }
 }

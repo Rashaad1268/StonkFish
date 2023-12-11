@@ -62,7 +62,7 @@ void main() {
   });
 
   test('Test countBits()', () {
-    final board = Board.startingPosition;
+    final board = Board.startingPosition();
 
     expect(countBits(board.whitePieces.value), equals(16));
     expect(countBits(board.blackPieces.value), equals(16));
@@ -71,7 +71,7 @@ void main() {
   });
 
   test('Test getLs1bIndex()', () {
-    final board = Board.startingPosition;
+    final board = Board.startingPosition();
 
     expect(() => getLs1bIndex(0), throwsA(isA<AssertionError>()));
     expect(getLs1bIndex(board.whitePieces.value), equals(Squares.a2));

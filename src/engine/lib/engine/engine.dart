@@ -68,6 +68,63 @@ class Engine {
     return board.turn.isWhite ? score : -score;
   }
 
+  int quiescence({required int alpha, required int beta}) {
+    // evaluate position
+    int evaluation = evaluate();
+    print('${evaluation >= beta} ${evaluation > alpha}');
+
+    // fail-hard beta cutoff
+    if (evaluation >= beta) {
+      // node (move) fails high
+      return beta;
+    }
+
+    // found a better move
+    if (evaluation > alpha) {
+      // PV node (move)
+      alpha = evaluation;
+    }
+
+    // create move list instance
+    final legalMoves = board.generateLegalMoves();
+
+    // loop over moves within a movelist
+    for (final move in legalMoves) {
+      // preserve board state
+      final boardCopy = board.toCopy();
+
+      // increment ply
+      ply++;
+
+      // make sure to make only legal moves
+      board.makeMove(move);
+
+      // score current move
+      int score = -quiescence(alpha: -beta, beta: -alpha);
+
+      // decrement ply
+      ply--;
+
+      // take move back
+      board.revertTo(boardCopy);
+
+      // fail-hard beta cutoff
+      if (score >= beta) {
+        // node (move) fails high
+        return beta;
+      }
+
+      // found a better move
+      if (score > alpha) {
+        // PV node (move)
+        alpha = score;
+      }
+    }
+
+    // node (move) fails low
+    return alpha;
+  }
+
   int negamax({required int alpha, required int beta, required int depth}) {
     // recursion escape condition
     if (depth == 0) {
@@ -83,12 +140,6 @@ class Engine {
 
     // old value of alpha
     int oldAlpha = alpha;
-
-    bool inCheck = board.isSquareAttacked(
-        (board.turn.isWhite)
-            ? getLs1bIndex(board.pieceBitBoards[PieceType.wKing]!.value)
-            : getLs1bIndex(board.pieceBitBoards[PieceType.bKing]!.value),
-        board.turn.opposite());
 
     final legalMoves = board.generateLegalMoves();
 
@@ -132,7 +183,7 @@ class Engine {
 
     if (legalMoves.isEmpty) {
       // king is in check
-      if (inCheck) {
+      if (board.isCheck) {
         // return mating score (assuming closest distance to mating position)
         return -49000 + ply;
       } else {

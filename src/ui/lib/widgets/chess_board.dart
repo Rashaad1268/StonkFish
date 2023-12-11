@@ -13,7 +13,8 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
-  static final board = engine.Board.startingPosition;
+  static final board = engine.Board.fromFen(
+      '6k1/2br1p1p/6p1/2B4B/p1b5/2N5/r4PPP/4R1K1 w - - 0 1');
   final stonkfishEngine = engine.Engine(board);
   List<engine.Move> legalMoves = [];
   var errorMessage = '';
@@ -21,6 +22,7 @@ class _ChessBoardState extends State<ChessBoard> {
   @override
   void initState() {
     super.initState();
+    print(board.toFen());
   }
 
   @override
@@ -34,7 +36,9 @@ class _ChessBoardState extends State<ChessBoard> {
         Text(errorMessage, style: TextStyle(color: Colors.red.shade500)),
         Board(
           size: boardSize,
-          settings: const BoardSettings(pieceAssets: maestroPieceSet, ),
+          settings: const BoardSettings(
+            pieceAssets: maestroPieceSet,
+          ),
           data: BoardData(
             fen: board.toFen(),
             interactableSide: InteractableSide.both,
@@ -55,10 +59,10 @@ class _ChessBoardState extends State<ChessBoard> {
                 board.makeMove(moveToMake);
               });
 
-                stonkfishEngine.searchPosition(4);
-                if (stonkfishEngine.bestMove != null) {
-                  board.makeMove(stonkfishEngine.bestMove!);
-                }
+              stonkfishEngine.searchPosition(4);
+              if (stonkfishEngine.bestMove != null) {
+                board.makeMove(stonkfishEngine.bestMove!);
+              }
             } catch (error) {
               if (error is ArgumentError) {
                 setState(() {

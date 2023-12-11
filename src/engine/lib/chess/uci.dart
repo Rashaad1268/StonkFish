@@ -49,7 +49,7 @@ class UCIParser {
     final movesStr = RegExp(r"moves\s.+").firstMatch(command)?[0];
 
     if (command.startsWith("startpos")) {
-      board = Board.startingPosition;
+      board = Board.startingPosition();
     } else if (command.startsWith("fen")) {
       board = Board.fromFen(command.substring(4));
     }

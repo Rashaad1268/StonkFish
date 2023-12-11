@@ -2,7 +2,7 @@ import './env.dart';
 import 'package:engine/engine.dart';
 import 'package:nyxx/nyxx.dart';
 
-var board = Board.startingPosition;
+var board = Board.startingPosition();
 var useUnicodeCharacters = true;
 var fillEmptySquares = true;
 
@@ -32,13 +32,14 @@ void main() {
             .sendMessage(MessageBuilder.content("Invalid move bruh"));
         return;
       }
+      final engine = Engine(board);
 
       try {
         board.makeMove(move);
-        board.searchPosition(4);
+        engine.searchPosition(4);
 
-        if (board.generateLegalMoves().isNotEmpty && Eval.bestMove != null) {
-          board.makeMove(Eval.bestMove!);
+        if (board.generateLegalMoves().isNotEmpty && engine.bestMove != null) {
+          board.makeMove(engine.bestMove!);
         }
       } catch (error) {
         if (error is ArgumentError) {
@@ -60,7 +61,7 @@ void main() {
       await event.message.channel.sendMessage(MessageBuilder.content(
           "```${board.formatBoard(side: Side.white, useUnicodeCharacters: useUnicodeCharacters, fillEmptySquares: fillEmptySquares)}```"));
     } else if (content.startsWith("!reset")) {
-      board = Board.startingPosition;
+      board = Board.startingPosition();
     }
   });
 }

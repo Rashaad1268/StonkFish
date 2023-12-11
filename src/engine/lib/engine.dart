@@ -8,6 +8,5 @@ export 'chess/magic_numbers.dart';
 export 'chess/perft.dart';
 export 'chess/uci.dart';
 
-export 'engine/eval.dart';
 export 'engine/scores.dart';
 export 'engine/engine.dart';

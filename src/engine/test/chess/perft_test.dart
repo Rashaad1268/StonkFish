@@ -5,7 +5,7 @@ void main() {
   initAttacks();
 
   test('Test legal move generation (start position)', () {
-    final board = Board.startingPosition;
+    final board = Board.startingPosition();
 
     expect(perft(depth: 1, board: board), equals(20));
     expect(perft(depth: 2, board: board), equals(400));

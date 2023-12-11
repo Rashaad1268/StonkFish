@@ -25,10 +25,12 @@ extension MoveMaker on Board {
     handlePawnPromotion(board: this, move: move);
 
     if (validateSide) {
-      movesPlayed.add(move);
-
       halfMoveClock =
           (move.isCapture || move.piece.isPawn) ? 0 : halfMoveClock + 1;
+
+      if (!move.piece.side.isWhite) {
+        movesPlayed++;
+      }
     }
 
     turn = turn.opposite();

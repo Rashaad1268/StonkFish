@@ -273,7 +273,6 @@ void initAttacks() {
 extension AttackGeneration on Board {
   bool isSquareAttacked(int square, Side side) {
     // attacked by white pawns
-    final isWhite = side == Side.white;
 
     // attacked by white pawns
     if ((side.isWhite) &&
@@ -291,35 +290,35 @@ extension AttackGeneration on Board {
 
     // attacked by knights
     if ((knightAttacks[square] &
-            ((isWhite)
+            ((side.isWhite)
                 ? pieceBitBoards[PieceType.wKnight]!.value
                 : pieceBitBoards[PieceType.bKnight]!.value)) !=
         0) return true;
 
     // attacked by bishops
     if ((getBishopAttacks(square, allPieces) &
-            ((isWhite)
+            ((side.isWhite)
                 ? pieceBitBoards[PieceType.wBishop]!
                 : pieceBitBoards[PieceType.bBishop]!))
         .notEmpty) return true;
 
     // attacked by rooks
     if ((getRookAttacks(square, allPieces) &
-            ((isWhite)
+            ((side.isWhite)
                 ? pieceBitBoards[PieceType.wRook]!
                 : pieceBitBoards[PieceType.bRook]!))
         .notEmpty) return true;
 
     // attacked by bishops
     if ((getQueenAttacks(square, allPieces) &
-            ((isWhite)
+            ((side.isWhite)
                 ? pieceBitBoards[PieceType.wQueen]!
                 : pieceBitBoards[PieceType.bQueen]!))
         .notEmpty) return true;
 
     // attacked by kings
     if ((kingAttacks[square] &
-            ((isWhite)
+            ((side.isWhite)
                 ? pieceBitBoards[PieceType.wKing]!.value
                 : pieceBitBoards[PieceType.bKing]!.value))
         != 0) return true;
